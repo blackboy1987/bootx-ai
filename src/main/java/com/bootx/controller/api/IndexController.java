@@ -27,13 +27,11 @@ public class IndexController extends BaseController {
 
     @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> message(String content, HttpServletRequest request){
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()){
-            String s = headerNames.nextElement();
-            System.out.println(s+":"+request.getHeader(s));
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()){
+            String s = parameterNames.nextElement();
+            System.out.println(s+":"+request.getParameter(s));
         }
-
-
         List<MessagePojo> list = new ArrayList<>();
         final Boolean[] isTop = {false};
         AtomicReference<Integer> index = new AtomicReference<>(0);
@@ -50,7 +48,6 @@ public class IndexController extends BaseController {
         return Flux.interval(Duration.ofMillis(1000)).map(sequence -> {
             // 如果没有结束
             if (index.get()<list.size() ){
-                System.out.println(index.get());
                 try {
                     return list.get(index.getAndSet(index.get() + 1));
                 }catch (Exception e){
@@ -62,7 +59,7 @@ public class IndexController extends BaseController {
             }else {
                 return MessagePojo.stop();
             }
-        });
+        }).takeUntil(item->StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop"));
     }
 
 
