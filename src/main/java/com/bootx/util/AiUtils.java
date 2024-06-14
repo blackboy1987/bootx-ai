@@ -83,7 +83,7 @@ public class AiUtils {
             Generation gen = new Generation();
             Message userMsg = Message.builder().role(Role.USER.getValue()).content(content).build();
             streamCallWithCallback(gen, userMsg,callback);
-        } catch (ApiException | NoApiKeyException | InputRequiredException | InterruptedException e) {
+        } catch (ApiException | NoApiKeyException | InputRequiredException | InterruptedException ignored) {
         }
     }
 }
