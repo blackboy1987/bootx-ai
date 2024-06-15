@@ -1,4 +1,4 @@
-package com.bootx.controller.api;
+package com.bootx.controller.member;
 
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author black
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/member")
 public class IndexController extends BaseController {
 
     @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -62,8 +62,6 @@ public class IndexController extends BaseController {
         }).takeUntil(item->StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop"));
     }
 
-
-
     @GetMapping(value = "/vl",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> vl(String image,String content){
         List<MessagePojo> list = new ArrayList<>();
@@ -94,8 +92,6 @@ public class IndexController extends BaseController {
             }
         });
     }
-
-
     @PostMapping(value = "/app")
     public Result app(){
         List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,thumb,title,memo from categoryapp");

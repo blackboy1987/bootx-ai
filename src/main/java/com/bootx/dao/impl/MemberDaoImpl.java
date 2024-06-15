@@ -6,13 +6,9 @@ import com.bootx.entity.Member;
 import org.springframework.stereotype.Repository;
 
 /**
- * Dao - 会员
- * 
- * @author 好源++ Team
- * @version 6.1
+ * @author black
  */
 @Repository
 public class MemberDaoImpl extends BaseDaoImpl<Member, Long> implements MemberDao {
-
 
 }

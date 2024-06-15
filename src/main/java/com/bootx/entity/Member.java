@@ -1,115 +1,116 @@
-
 package com.bootx.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * Entity - 会员
- * 
- * @author 好源++ Team
- * @version 6.1
+ * @author black
  */
 @Entity
 public class Member extends User {
 
-	/**
-	 * 手机
-	 */
-	@NotEmpty
-	@Length(max = 200)
-	@Pattern(regexp = "^1[3|4|5|6|7|8|9]\\d{9}$")
-	@Column(nullable = false)
-	private String mobile;
-
-	/**
-	 * 积分
-	 */
-	private Long point;
+    /**
+     * "登录失败尝试次数"缓存名称
+     */
+    public static final String FAILED_LOGIN_ATTEMPTS_CACHE_NAME = "memberFailedLoginAttempts";
 
 
-	/**
-	 * 会员等级
-	 */
-	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
-	private MemberRank memberRank;
+    /**
+     * 用户名
+     */
+    @NotEmpty(groups = Save.class)
+    @Column(nullable = false, updatable = false,unique = true)
+    @JsonView({PageView.class,ViewView.class})
+    private String username;
 
-	/**
-	 * 获取手机
-	 * 
-	 * @return 手机
-	 */
-	public String getMobile() {
-		return mobile;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member parent;
 
-	/**
-	 * 设置手机
-	 * 
-	 * @param mobile
-	 *            手机
-	 */
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
+    @OneToMany(mappedBy = "parent",fetch = FetchType.LAZY)
+    private Set<Member> children = new HashSet<>();
 
-	/**
-	 * 获取积分
-	 * 
-	 * @return 积分
-	 */
-	public Long getPoint() {
-		return point;
-	}
+    private String deviceId;
 
-	/**
-	 * 设置积分
-	 * 
-	 * @param point
-	 *            积分
-	 */
-	public void setPoint(Long point) {
-		this.point = point;
-	}
+    /**
+     * 手机
+     */
+    @NotEmpty
+    @Length(max = 11)
+    @Pattern(regexp = "^1[3|4|5|7|8]\\d{9}$")
+    @Column(nullable = false)
+    private String mobile;
 
-	/**
-	 * 获取会员等级
-	 * 
-	 * @return 会员等级
-	 */
-	public MemberRank getMemberRank() {
-		return memberRank;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MemberRank memberRank;
 
-	/**
-	 * 设置会员等级
-	 * 
-	 * @param memberRank
-	 *            会员等级
-	 */
-	public void setMemberRank(MemberRank memberRank) {
-		this.memberRank = memberRank;
-	}
+    /**
+     * 获取用户名
+     *
+     * @return 用户名
+     */
+    public String getUsername() {
+        return username;
+    }
 
-	/**
-	 * 持久化前处理
-	 */
-	@PrePersist
-	public void prePersist() {
-		setMobile(StringUtils.lowerCase(getMobile()));
-	}
+    /**
+     * 设置用户名
+     *
+     * @param username
+     *            用户名
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	/**
-	 * 更新前处理
-	 */
-	@PreUpdate
-	public void preUpdate() {
-		setMobile(StringUtils.lowerCase(getMobile()));
-	}
+    public String getDeviceId() {
+        return deviceId;
+    }
 
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    @Transient
+    @Override
+    public boolean isValidCredentials(Object credentials) {
+        return true;
+    }
+
+    public Member getParent() {
+        return parent;
+    }
+
+    public void setParent(Member parent) {
+        this.parent = parent;
+    }
+
+    public Set<Member> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<Member> children) {
+        this.children = children;
+    }
+
+    public @NotEmpty @Length(max = 11) @Pattern(regexp = "^1[3|4|5|7|8]\\d{9}$") String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(@NotEmpty @Length(max = 11) @Pattern(regexp = "^1[3|4|5|7|8]\\d{9}$") String mobile) {
+        this.mobile = mobile;
+    }
+
+    public MemberRank getMemberRank() {
+        return memberRank;
+    }
+
+    public void setMemberRank(MemberRank memberRank) {
+        this.memberRank = memberRank;
+    }
 }

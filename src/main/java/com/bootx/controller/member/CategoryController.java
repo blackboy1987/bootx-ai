@@ -1,4 +1,4 @@
-package com.bootx.controller.api;
+package com.bootx.controller.member;
 
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
@@ -13,7 +13,7 @@ import java.util.Map;
  * @author black
  */
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/member/category")
 public class CategoryController extends BaseController {
 
     @PostMapping(value = "/list")

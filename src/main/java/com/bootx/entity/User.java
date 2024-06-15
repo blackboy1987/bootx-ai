@@ -3,15 +3,13 @@ package com.bootx.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
 /**
- * Entity - 用户
- * 
- * @author 好源++ Team
- * @version 6.1
+ * @author black
  */
 @MappedSuperclass
 public abstract class User extends BaseEntity<Long> {
@@ -139,5 +137,13 @@ public abstract class User extends BaseEntity<Long> {
 		this.lastLoginDate = lastLoginDate;
 	}
 
-
+	/**
+	 * 判断凭证是否正确
+	 *
+	 * @param credentials
+	 *            凭证
+	 * @return 凭证是否正确
+	 */
+	@Transient
+	public abstract boolean isValidCredentials(Object credentials);
 }
