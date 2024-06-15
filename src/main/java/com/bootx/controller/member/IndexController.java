@@ -2,28 +2,30 @@ package com.bootx.controller.member;
 
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
-import com.bootx.util.AiUtils;
-import com.bootx.util.AiVlUtils;
-import com.bootx.util.MessagePojo;
+import com.bootx.entity.Member;
+import com.bootx.service.MemberService;
+import com.bootx.util.*;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author black
  */
-@RestController
+@RestController("MemberIndexController")
 @RequestMapping("/api/member")
 public class IndexController extends BaseController {
+
+    @Resource
+    private MemberService memberService;
 
     @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> message(String content, HttpServletRequest request){
@@ -96,6 +98,27 @@ public class IndexController extends BaseController {
     public Result app(){
         List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,thumb,title,memo from categoryapp");
         return Result.success(maps);
+    }
+
+    @PostMapping(value = "/sendCode")
+    public Result sendCode(@RequestHeader String deviceId,String mobile){
+        Member member = memberService.create(mobile, deviceId);
+        if(member!=null && StringUtils.equalsAnyIgnoreCase(member.getMobile(),mobile)){
+            String code = "1234";
+            //String send = SmsUtils.send(mobile,code);
+            redisService.set("login:"+mobile+":"+deviceId,code,10, TimeUnit.MINUTES);
+            return Result.success();
+        }
+        return Result.error("信息校验失败");
+    }
+    @PostMapping(value = "/login")
+    public Result login(@RequestHeader String deviceId,String mobile,String code){
+        Member member = memberService.findByMobile(mobile);
+        String s = redisService.get("login:" + mobile + ":" + deviceId);
+        if(!StringUtils.equalsAnyIgnoreCase(s,code)){
+            return Result.error("验证码输入错误");
+        }
+        return Result.success(JWTUtils.create(member.getId()+"",new HashMap<>()));
     }
 
 }

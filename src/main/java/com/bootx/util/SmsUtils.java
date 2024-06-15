@@ -26,6 +26,7 @@ public class SmsUtils {
            params.put("templateId","64099");
            params.put("content", URLEncoder.encode(code, StandardCharsets.UTF_8));
            result = WebUtils.postBody(SEND_URL, params);
+           System.out.println(result);
        }catch (Exception ignored){
 
        }
