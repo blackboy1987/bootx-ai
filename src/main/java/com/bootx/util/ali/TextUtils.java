@@ -9,9 +9,11 @@ import com.alibaba.dashscope.common.Role;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.utils.Constants;
+import com.bootx.util.MessagePojo;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.Semaphore;
+import java.util.function.Consumer;
 
 /**
  * 文本
@@ -21,13 +23,14 @@ public class TextUtils {
     static {
         Constants.apiKey = "sk-48fb566bdf2d47b7be330ed85acfb883";
     }
-    public static void streamCallWithCallback(String content) throws NoApiKeyException, InputRequiredException, InterruptedException {
+    public static void streamCallWithCallback(String content, Consumer<MessagePojo> onEvent, Consumer<String> onError, Consumer<Integer> onComplete) throws NoApiKeyException, InputRequiredException, InterruptedException {
+        System.out.println(content);
         Generation gen = new Generation();
         Message userMsg = Message.builder().role(Role.USER.getValue()).content(content).build();
         GenerationParam param = GenerationParam.builder()
-                .model("qwen-max")
+                .model("qwen-plus")
                 .resultFormat(GenerationParam.ResultFormat.MESSAGE)
-                .messages(Arrays.asList(userMsg))
+                .messages(Collections.singletonList(userMsg))
                 .topP(0.8)
                 .incrementalOutput(true)
                 .build();
@@ -35,18 +38,22 @@ public class TextUtils {
         gen.streamCall(param, new ResultCallback<GenerationResult>() {
             @Override
             public void onEvent(GenerationResult message) {
-                String content1 = message.getOutput().getChoices().get(0).getMessage().getContent();
-                System.out.println(content1);
+                MessagePojo messagePojo = new MessagePojo();
+                messagePojo.init(message);
+                onEvent.accept(messagePojo);
             }
 
             @Override
             public void onError(Exception err) {
                 semaphore.release();
+                System.out.println(err.getMessage());
+                onError.accept(err.getMessage());
             }
 
             @Override
             public void onComplete() {
                 semaphore.release();
+                onComplete.accept(0);
             }
 
         });

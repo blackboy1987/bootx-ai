@@ -30,10 +30,8 @@ public class AiUtils {
              */
             @Override
             public void onEvent(GenerationResult message) {
-                System.out.println(JsonUtils.toJson(message));
                 MessagePojo messagePojo = new MessagePojo();
                 messagePojo.init(message);
-
                 callback.accept(messagePojo);
             }
 

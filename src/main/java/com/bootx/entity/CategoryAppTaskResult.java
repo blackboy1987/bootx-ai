@@ -32,15 +32,15 @@ public class CategoryAppTaskResult extends BaseEntity<Long> {
     @NotNull
     @Column(nullable = false)
     @Min(0)
-    private Long inputTokens;
+    private Integer inputTokens;
     @NotNull
     @Column(nullable = false)
     @Min(0)
-    private Long outputTokens;
+    private Integer outputTokens;
     @NotNull
     @Column(nullable = false)
     @Min(0)
-    private Long totalTokens;
+    private Integer totalTokens;
 
     public @NotNull CategoryAppTask getCategoryAppTask() {
         return categoryAppTask;
@@ -74,27 +74,27 @@ public class CategoryAppTaskResult extends BaseEntity<Long> {
         this.content = content;
     }
 
-    public @NotNull @Min(0) Long getInputTokens() {
+    public @NotNull @Min(0) Integer getInputTokens() {
         return inputTokens;
     }
 
-    public void setInputTokens(@NotNull @Min(0) Long inputTokens) {
+    public void setInputTokens(@NotNull @Min(0) Integer inputTokens) {
         this.inputTokens = inputTokens;
     }
 
-    public @NotNull @Min(0) Long getOutputTokens() {
+    public @NotNull @Min(0) Integer getOutputTokens() {
         return outputTokens;
     }
 
-    public void setOutputTokens(@NotNull @Min(0) Long outputTokens) {
+    public void setOutputTokens(@NotNull @Min(0) Integer outputTokens) {
         this.outputTokens = outputTokens;
     }
 
-    public @NotNull @Min(0) Long getTotalTokens() {
+    public @NotNull @Min(0) Integer getTotalTokens() {
         return totalTokens;
     }
 
-    public void setTotalTokens(@NotNull @Min(0) Long totalTokens) {
+    public void setTotalTokens(@NotNull @Min(0) Integer totalTokens) {
         this.totalTokens = totalTokens;
     }
 }

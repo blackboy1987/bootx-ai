@@ -1,5 +1,6 @@
 package com.bootx.dao;
 
+import com.bootx.entity.CategoryAppTask;
 import com.bootx.entity.CategoryAppTaskResult;
 
 /**
@@ -8,4 +9,5 @@ import com.bootx.entity.CategoryAppTaskResult;
  * @author 一枚猿：blackboyhjy1987
  */
 public interface CategoryAppTaskResultDao extends BaseDao<CategoryAppTaskResult,Long>{
+    CategoryAppTaskResult findByCategoryAppTask(CategoryAppTask categoryAppTask);
 }

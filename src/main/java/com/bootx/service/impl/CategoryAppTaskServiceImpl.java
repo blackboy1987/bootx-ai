@@ -7,6 +7,7 @@ import com.bootx.service.CategoryAppTaskService;
 import com.bootx.util.DateUtils;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.util.Date;
 
 /**
@@ -26,5 +27,26 @@ public class CategoryAppTaskServiceImpl extends BaseServiceImpl<CategoryAppTask,
         categoryAppTask.setStatus(0);
         categoryAppTask.setTaskId(DateUtils.formatDateToString(new Date(), "yyyyMMddHHmmssSSS") + categoryApp.getId() + member.getId());
         return super.save(categoryAppTask);
+    }
+
+    @Override
+    public void error(CategoryAppTask categoryAppTask) {
+        categoryAppTask.setStatus(4);
+        categoryAppTask.setTaskEndDate(new Date());
+        super.update(categoryAppTask);
+    }
+
+    @Override
+    public void complete(CategoryAppTask categoryAppTask) {
+        categoryAppTask.setStatus(2);
+        categoryAppTask.setTaskEndDate(new Date());
+        super.update(categoryAppTask);
+    }
+
+    @Override
+    public void start(CategoryAppTask categoryAppTask) {
+        categoryAppTask.setStatus(1);
+        categoryAppTask.setTaskBeginDate(new Date());
+        super.update(categoryAppTask);
     }
 }

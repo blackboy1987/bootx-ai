@@ -28,10 +28,6 @@ public class MessagePojo implements Serializable {
 
     private String content;
 
-    public MessagePojo() {
-        this.content = "";
-    }
-
     public String getRequestId() {
         return requestId;
     }
@@ -89,7 +85,6 @@ public class MessagePojo implements Serializable {
     }
 
     public void init(GenerationResult message) {
-
         GenerationOutput output = message.getOutput();
         GenerationOutput.Choice choice = output.getChoices().get(0);
         this.requestId = message.getRequestId();
