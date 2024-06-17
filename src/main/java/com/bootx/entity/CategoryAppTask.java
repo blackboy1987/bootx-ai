@@ -1,5 +1,6 @@
 package com.bootx.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ public class CategoryAppTask extends BaseEntity<Long> {
 
     @NotEmpty
     @Column(nullable = false,updatable = false,unique = true)
+    @JsonView({PageView.class})
     private String taskId;
 
     @NotNull
@@ -39,10 +41,12 @@ public class CategoryAppTask extends BaseEntity<Long> {
      */
     @NotNull
     @Column(nullable = false)
+    @JsonView({PageView.class})
     private Integer status;
 
     private Date taskBeginDate;
 
+    @JsonView({PageView.class})
     private Date taskEndDate;
 
     public @NotEmpty String getTaskId() {
@@ -99,5 +103,26 @@ public class CategoryAppTask extends BaseEntity<Long> {
 
     public void setTaskEndDate(Date taskEndDate) {
         this.taskEndDate = taskEndDate;
+    }
+
+    @Transient
+    @JsonView({PageView.class})
+    public String getAppName(){
+        if(categoryApp!=null){
+            return categoryApp.getTitle();
+        }
+
+        return null;
+    }
+
+
+    @Transient
+    @JsonView({PageView.class})
+    public String getAppLogo(){
+        if(categoryApp!=null){
+            return categoryApp.getThumb();
+        }
+
+        return null;
     }
 }
