@@ -12,4 +12,5 @@ import com.bootx.entity.CategoryApp;
 public interface CategoryAppService extends BaseService<CategoryApp, Long> {
 
 
+    CategoryApp findByName(String name);
 }

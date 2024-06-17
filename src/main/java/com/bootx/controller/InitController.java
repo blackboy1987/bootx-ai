@@ -6,6 +6,8 @@ import com.bootx.entity.CategoryApp;
 import com.bootx.entity.Prompt;
 import com.bootx.entity.Topic;
 import com.bootx.pojo.CategoryAppPojo;
+import com.bootx.pojo.FormData;
+import com.bootx.pojo.FormData1;
 import com.bootx.pojo.TopicPojo;
 import com.bootx.service.CategoryAppService;
 import com.bootx.service.CategoryService;
@@ -110,4 +112,38 @@ public class InitController {
         return Result.success(categoryAppPojo);
     }
 
+
+    @PostMapping("/categoryApp1")
+    public Result categoryApp1(String appString,Long categoryId) {
+        CategoryAppPojo categoryAppPojo = JsonUtils.toObject(appString, new TypeReference<CategoryAppPojo>() {
+        });
+        categoryAppPojo.getData().forEach(categoryApp -> {
+            for (CategoryAppPojo.DataBean.CreatebotsBean createbot : categoryApp.getCreatebots()) {
+
+                CategoryApp categoryApp1 = categoryAppService.findByName(createbot.getName());
+                if(categoryApp1!=null){
+                    try {
+                        List<FormData1> formData1s = JsonUtils.toObject(JsonUtils.toJson(createbot.getFormList()), new TypeReference<List<FormData1>>() {
+                        });
+                        categoryApp1.setFormDataList1(formData1s);
+                    }catch (Exception e){
+                       try {
+                           List<FormData> formData1 = JsonUtils.toObject(JsonUtils.toJson(createbot.getFormList()), new TypeReference<List<FormData>>() {
+                           });
+                           categoryApp1.setFormDataList(formData1);
+                       }catch (Exception e1){
+                           e1.printStackTrace();
+                       }
+                    }
+
+                    categoryAppService.update(categoryApp1);
+                }
+            }
+
+        });
+
+
+
+        return Result.success(categoryAppPojo);
+    }
 }

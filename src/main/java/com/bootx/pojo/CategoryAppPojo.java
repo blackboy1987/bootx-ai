@@ -71,6 +71,8 @@ public class CategoryAppPojo implements Serializable {
             @JsonProperty("welcome_message")
             private String welcomeMessage;
 
+            private Object formList;
+
             public String getName() {
                 return name;
             }
@@ -93,6 +95,14 @@ public class CategoryAppPojo implements Serializable {
 
             public void setWelcomeMessage(String welcomeMessage) {
                 this.welcomeMessage = welcomeMessage;
+            }
+
+            public Object getFormList() {
+                return formList;
+            }
+
+            public void setFormList(Object formList) {
+                this.formList = formList;
             }
         }
     }
