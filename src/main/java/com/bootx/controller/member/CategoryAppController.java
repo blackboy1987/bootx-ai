@@ -45,7 +45,6 @@ public class CategoryAppController extends BaseController {
 
     @PostMapping(value = "/write")
     public Result write(Long categoryAppId, String params, @CurrentUser Member member) throws NoApiKeyException, InputRequiredException, InterruptedException {
-        System.out.println(params);
         CategoryApp categoryApp = categoryAppService.find(categoryAppId);
         CategoryAppTask categoryAppTask = categoryAppTaskService.create(categoryApp, member, params);
         StringBuilder content = new StringBuilder(categoryApp.getTitle()+"。");
@@ -59,7 +58,7 @@ public class CategoryAppController extends BaseController {
             }
 
         }
-        TextUtils.streamCallWithCallback(content.toString(),
+        TextUtils.streamCallWithMessage(content.toString(),
                 messagePojo -> {
                     categoryAppTaskService.start(categoryAppTask);
                     categoryAppTaskResultService.create(categoryAppTask, messagePojo);

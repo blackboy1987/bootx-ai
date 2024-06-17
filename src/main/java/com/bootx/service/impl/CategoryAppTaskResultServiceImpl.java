@@ -27,7 +27,9 @@ public class CategoryAppTaskResultServiceImpl extends BaseServiceImpl<CategoryAp
         CategoryAppTaskResult categoryAppTaskResult = findByCategoryAppTask(categoryAppTask);
         if(categoryAppTaskResult==null){
             categoryAppTaskResult=new CategoryAppTaskResult();
+            categoryAppTaskResult.setMember(categoryAppTask.getMember());
             categoryAppTaskResult.setCategoryAppTask(categoryAppTask);
+            categoryAppTaskResult.setCategoryApp(categoryAppTask.getCategoryApp());
         }
 
         categoryAppTaskResult.setContent(categoryAppTaskResult.getContent()+messagePojo.getContent());
