@@ -7,7 +7,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StyleCatalogDTOListDTO {
     private String type;
-    private String extInfo;
+    private String categoryName;
+
+    private String categoryCode;
+
     private List<DataListDTO> dataList = new ArrayList<>();
 
     public String getType() {
@@ -18,12 +21,20 @@ public class StyleCatalogDTOListDTO {
         this.type = type;
     }
 
-    public String getExtInfo() {
-        return extInfo;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setExtInfo(String extInfo) {
-        this.extInfo = extInfo;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryCode() {
+        return categoryCode;
+    }
+
+    public void setCategoryCode(String categoryCode) {
+        this.categoryCode = categoryCode;
     }
 
     public List<DataListDTO> getDataList() {
