@@ -3,16 +3,11 @@ package com.bootx.controller.member;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
-import com.bootx.event.MyEvent;
-import com.bootx.event.MyEventListener;
-import com.bootx.event.MyEventPublisher;
 import com.bootx.service.MemberService;
 import com.bootx.util.*;
-import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -32,24 +27,40 @@ public class IndexController extends BaseController {
     @Resource
     private MemberService memberService;
 
-    @Resource
-    private MyEventPublisher publisher;
-
-    @Resource
-    private MyEventListener myEventListener;
-
-
     @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<MessagePojo> message(String content){
-        MyEvent myEvent = new MyEvent(this);
-        AiUtils.message(content, message->{
-            publisher.publishEvent(myEvent,message);
-        });
-        return Flux.interval(Duration.ofMillis(1000)).map(sequence -> {
-            String s = myEventListener.handleEvent(myEvent.getMessage());
-            System.out.println(s);
-            return JsonUtils.toObject(s, new TypeReference<MessagePojo>() {
+    public Flux<MessagePojo> message(String content, HttpServletRequest request){
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()){
+            String s = parameterNames.nextElement();
+            System.out.println(s+":"+request.getParameter(s));
+        }
+        List<MessagePojo> list = new ArrayList<>();
+        final Boolean[] isTop = {false};
+        AtomicReference<Integer> index = new AtomicReference<>(0);
+        new Thread(()->{
+            AiUtils.message(content, message->{
+                System.out.println(new Date());
+                if (!isTop[0] && StringUtils.isNotBlank(message.getRequestId())){
+                    list.add(message);
+                    isTop[0] = StringUtils.equalsIgnoreCase(message.getFinishReason(),"stop");
+                }
             });
+        }).start();
+
+        return Flux.interval(Duration.ofMillis(1000)).map(sequence -> {
+            // 如果没有结束
+            if (index.get()<list.size() ){
+                try {
+                    return list.get(index.getAndSet(index.get() + 1));
+                }catch (Exception e){
+                    index.set(index.get()-1);
+                    System.out.println(index.get());
+                    // 没有结束还有消息，但是list里面的消息已经获取完毕了
+                    return new MessagePojo();
+                }
+            }else {
+                return MessagePojo.stop();
+            }
         }).takeUntil(item->StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop"));
     }
 
