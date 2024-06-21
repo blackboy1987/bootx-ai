@@ -15,6 +15,9 @@ import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 
+/**
+ * @author black
+ */
 public class AiUtils {
     public static String token = "sk-48fb566bdf2d47b7be330ed85acfb883";
 
