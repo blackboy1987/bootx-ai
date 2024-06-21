@@ -102,4 +102,11 @@ public class MessagePojo implements Serializable {
 
         return messagePojo;
     }
+
+    public static MessagePojo empty(){
+        MessagePojo messagePojo = new MessagePojo();
+        messagePojo.setFinishReason("empty");
+
+        return messagePojo;
+    }
 }

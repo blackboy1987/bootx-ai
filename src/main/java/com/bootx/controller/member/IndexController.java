@@ -39,7 +39,7 @@ public class IndexController extends BaseController {
         AtomicReference<Integer> index = new AtomicReference<>(0);
         new Thread(()->{
             AiUtils.message(content, message->{
-                System.out.println(new Date());
+                System.out.println(JsonUtils.toJson(message));
                 if (!isTop[0] && StringUtils.isNotBlank(message.getRequestId())){
                     list.add(message);
                     isTop[0] = StringUtils.equalsIgnoreCase(message.getFinishReason(),"stop");
@@ -47,21 +47,15 @@ public class IndexController extends BaseController {
             });
         }).start();
 
-        return Flux.interval(Duration.ofMillis(1000)).map(sequence -> {
-            // 如果没有结束
-            if (index.get()<list.size() ){
-                try {
-                    return list.get(index.getAndSet(index.get() + 1));
-                }catch (Exception e){
-                    index.set(index.get()-1);
-                    System.out.println(index.get());
-                    // 没有结束还有消息，但是list里面的消息已经获取完毕了
-                    return new MessagePojo();
-                }
-            }else {
-                return MessagePojo.stop();
+        return Flux.interval(Duration.ofMillis(10)).onBackpressureBuffer().map(sequence -> {
+            try {
+                return list.get(index.getAndSet(index.get() + 1));
+            }catch (Exception e){
+                index.set(index.get()-1);
+                // 没有结束还有消息，但是list里面的消息已经获取完毕了
+                return MessagePojo.empty();
             }
-        }).takeUntil(item->StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop"));
+        }).filter(item->!StringUtils.equalsIgnoreCase(item.getFinishReason(),"empty") && StringUtils.isNotEmpty(item.getContent())).takeUntil(item->StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop"));
     }
 
     @GetMapping(value = "/vl",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
