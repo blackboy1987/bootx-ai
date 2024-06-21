@@ -8,6 +8,7 @@ import com.bootx.event.MyEventListener;
 import com.bootx.event.MyEventPublisher;
 import com.bootx.service.MemberService;
 import com.bootx.util.*;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -40,10 +41,16 @@ public class IndexController extends BaseController {
 
     @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> message(String content){
+        MyEvent myEvent = new MyEvent(this);
         AiUtils.message(content, message->{
-            publisher.publishEvent(message);
+            publisher.publishEvent(myEvent,message);
         });
-        return Flux.interval(Duration.ofMillis(1000)).map(sequence -> MessagePojo.stop()).takeUntil(item->StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop"));
+        return Flux.interval(Duration.ofMillis(1000)).map(sequence -> {
+            String s = myEventListener.handleEvent(myEvent.getMessage());
+            System.out.println(s);
+            return JsonUtils.toObject(s, new TypeReference<MessagePojo>() {
+            });
+        }).takeUntil(item->StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop"));
     }
 
     @GetMapping(value = "/vl",produces = MediaType.TEXT_EVENT_STREAM_VALUE)

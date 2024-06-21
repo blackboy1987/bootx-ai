@@ -1,21 +1,19 @@
 package com.bootx.event;
 
-import com.bootx.util.MessagePojo;
 import org.springframework.context.ApplicationEvent;
 
 public class MyEvent extends ApplicationEvent {
-    private MessagePojo messagePojo;
+    private String message;
 
-    public MyEvent(Object source, MessagePojo messagePojo) {
+    public MyEvent(Object source) {
         super(source);
-        this.messagePojo = messagePojo;
-    }
-    public MessagePojo getMessagePojo() {
-        return messagePojo;
     }
 
-    public void setMessagePojo(MessagePojo messagePojo) {
-        this.messagePojo = messagePojo;
+    public String getMessage() {
+        return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

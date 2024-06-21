@@ -16,8 +16,9 @@ public class MyEventPublisher {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public void publishEvent(MessagePojo messagePojo) {
+    public void publishEvent(MyEvent myEvent,MessagePojo messagePojo) {
         System.out.println("publishEvent:"+JsonUtils.toJson(messagePojo));
-        applicationEventPublisher.publishEvent(new MyEvent(this, messagePojo));
+        myEvent.setMessage(JsonUtils.toJson(messagePojo));
+        applicationEventPublisher.publishEvent(myEvent);
     }
 }
