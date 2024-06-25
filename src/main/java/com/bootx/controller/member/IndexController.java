@@ -105,6 +105,7 @@ public class IndexController extends BaseController {
         }
         return Result.error("信息校验失败");
     }
+
     @PostMapping(value = "/login")
     public Result login(@RequestHeader String deviceId,String mobile,String code){
         Member member = memberService.findByMobile(mobile);
@@ -113,6 +114,11 @@ public class IndexController extends BaseController {
             return Result.error("验证码输入错误");
         }
         return Result.success(JWTUtils.create(member.getId()+"",new HashMap<>()));
+    }
+
+    @PostMapping(value = "/load")
+    public Result load(@RequestHeader String deviceId,String taskId){
+        return Result.success();
     }
 
 }
