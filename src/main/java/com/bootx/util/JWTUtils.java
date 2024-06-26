@@ -38,7 +38,8 @@ public final class JWTUtils {
         try {
             SecretKey key = Keys.hmacShaKeyFor(SECRETKEY.getBytes());
             return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

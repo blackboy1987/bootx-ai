@@ -31,7 +31,7 @@ public class TextAppTaskServiceImpl extends BaseServiceImpl<TextAppTask,Long> im
         textAppTask.setParams(params);
         textAppTask.setStatus(0);
         textAppTask.setPrompt("你是谁？");
-        textAppTask.setTaskId(DateUtils.formatDateToString(new Date(), "yyyyMMddHHmmssSSS") + textAppTask.getId() + member.getId());
+        textAppTask.setTaskId(DateUtils.formatDateToString(new Date(), "yyyyMMddHHmmssSSS") + member.getId());
         return super.save(textAppTask);
     }
 

@@ -9,12 +9,15 @@ import com.bootx.entity.TextApp;
 import com.bootx.entity.TextAppTask;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.CategoryAppTaskService;
+import com.bootx.service.MemberService;
 import com.bootx.service.TextAppService;
 import com.bootx.service.TextAppTaskService;
+import com.bootx.service.impl.MemberServiceImpl;
 import com.bootx.util.JsonUtils;
 import com.bootx.util.ali.TextUtils;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,32 +38,37 @@ public class WriteController extends BaseController {
 
     @Resource
     private TextAppTaskService textAppTaskService;
+    @Resource
+    private MemberService memberService;
 
-    @PostMapping(value = "/write")
-    public Result write(Long textAppId, String content, Integer count, @CurrentUser Member member) {
+    @PostMapping(value = "/text")
+    public Result write(Long textAppId, String content, Integer count) {
         TextApp textApp = textAppService.find(textAppId);
         if(textApp==null){
             return Result.error("应用不存在");
         }
+        Member member = memberService.find(1L);
         Map<String,Object> params = new HashMap<>();
         params.put("content",content);
         params.put("count",count);
         TextAppTask textAppTask = textAppTaskService.create(textApp, member, JsonUtils.toJson(params));
         textAppTaskService.start(textAppTask);
+        redisService.set("textAppTask:"+textAppTask.getTaskId(),"");
         TextUtils.streamCallWithCallback(textAppTask.getPrompt(),messagePojo -> {
-            textAppTaskService.load(textAppTask,messagePojo);
+            System.out.println(JsonUtils.toJson(messagePojo));
+            redisService.set("textAppTask:"+textAppTask.getTaskId(),redisService.get("textAppTask:"+textAppTask.getTaskId())+messagePojo.getContent());
+            //textAppTaskService.load(textAppTask,messagePojo);
         },err->{
-            textAppTaskService.error(textAppTask);
+            //textAppTaskService.error(textAppTask);
         },status->{
-            textAppTaskService.complete(textAppTask);
+            //textAppTaskService.complete(textAppTask);
         });
 
-        return Result.success(textAppTask.getId());
+        return Result.success(textAppTask.getTaskId());
     }
 
     @PostMapping(value = "/load")
     public Result load(@RequestHeader String deviceId, String taskId){
-        TextAppTask textAppTask = textAppTaskService.findByTaskId(taskId);
-        return Result.success(textAppTask.getResult());
+        return Result.success(redisService.get("textAppTask:"+taskId));
     }
 }
