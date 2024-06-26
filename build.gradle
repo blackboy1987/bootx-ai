@@ -20,6 +20,8 @@ repositories {
 
 dependencies {
 
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
+
     implementation group: 'org.apache.commons', name: 'commons-email', version: '1.6.0'
 
     implementation group: 'com.aliyun.oss', name: 'aliyun-sdk-oss', version: '3.17.4'

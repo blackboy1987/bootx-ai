@@ -31,9 +31,6 @@ public class IndexController extends BaseController {
     @Resource
     private MemberService memberService;
 
-    @Resource
-    private ImageTaskService imageTaskService;
-
     @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> message(String content){
         List<MessagePojo> list = new ArrayList<>();
@@ -97,6 +94,7 @@ public class IndexController extends BaseController {
         }
         return Result.error("信息校验失败");
     }
+
     @PostMapping(value = "/login")
     public Result login(@RequestHeader String deviceId,String mobile,String code){
         Member member = memberService.findByMobile(mobile);
