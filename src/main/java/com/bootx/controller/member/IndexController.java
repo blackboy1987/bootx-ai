@@ -3,8 +3,12 @@ package com.bootx.controller.member;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
+import com.bootx.security.CurrentUser;
+import com.bootx.service.ImageTaskService;
 import com.bootx.service.MemberService;
 import com.bootx.util.*;
+import com.bootx.util.ali.AliCommonUtils;
+import com.bootx.util.ali.TextToImageUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -20,33 +24,21 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author black
  */
-@RestController("MemberIndexController")
+@RestController("memberIndexController")
 @RequestMapping("/api/member")
 public class IndexController extends BaseController {
 
     @Resource
     private MemberService memberService;
 
-    @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<MessagePojo> message(String content, HttpServletRequest request){
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()){
-            String s = parameterNames.nextElement();
-            System.out.println(s+":"+request.getParameter(s));
-        }
-        List<MessagePojo> list = new ArrayList<>();
-        final Boolean[] isTop = {false};
-        AtomicReference<Integer> index = new AtomicReference<>(0);
-        new Thread(()->{
-            AiUtils.message(content, message->{
-                System.out.println(JsonUtils.toJson(message));
-                if (!isTop[0] && StringUtils.isNotBlank(message.getRequestId())){
-                    list.add(message);
-                    isTop[0] = StringUtils.equalsIgnoreCase(message.getFinishReason(),"stop");
-                }
-            });
-        }).start();
+    @Resource
+    private ImageTaskService imageTaskService;
 
+    @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<MessagePojo> message(String content){
+        List<MessagePojo> list = new ArrayList<>();
+        AtomicReference<Integer> index = new AtomicReference<>(0);
+        new Thread(()->AiUtils.message(content, list::add)).start();
         return Flux.interval(Duration.ofMillis(10)).onBackpressureBuffer().map(sequence -> {
             try {
                 return list.get(index.getAndSet(index.get() + 1));
@@ -113,6 +105,29 @@ public class IndexController extends BaseController {
             return Result.error("验证码输入错误");
         }
         return Result.success(JWTUtils.create(member.getId()+"",new HashMap<>()));
+    }
+
+
+    @PostMapping(value = "/text2image")
+    public Result textToImage(@RequestHeader String deviceId,@CurrentUser Member member,String prompt,String style,String size){
+        if(StringUtils.isEmpty(prompt)){
+            return Result.error("请输入提示词");
+        }
+        if(StringUtils.isEmpty(style)){
+            return Result.error("请选择图片风格");
+        }
+        if(StringUtils.isEmpty(size)){
+            return Result.error("请选择图片大小");
+        }
+        // 写入任务
+        TextToImageUtils.Output output = TextToImageUtils.create(prompt, style, size);
+        imageTaskService.create(member,output);
+        return Result.success(output.getOutput().getTaskId());
+    }
+
+    @PostMapping(value = "/task")
+    public Result task(@RequestHeader String deviceId,@CurrentUser Member member,String taskId){
+        return Result.success(AliCommonUtils.getTask(taskId));
     }
 
 }
