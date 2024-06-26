@@ -115,10 +115,4 @@ public class IndexController extends BaseController {
         }
         return Result.success(JWTUtils.create(member.getId()+"",new HashMap<>()));
     }
-
-    @PostMapping(value = "/load")
-    public Result load(@RequestHeader String deviceId,String taskId){
-        return Result.success();
-    }
-
 }

@@ -28,7 +28,7 @@ public class TextUtils {
     static {
         Constants.apiKey = "sk-48fb566bdf2d47b7be330ed85acfb883";
     }
-    public static void streamCallWithCallback(String content, Consumer<MessagePojo> onEvent, Consumer<String> onError, Consumer<Integer> onComplete) throws NoApiKeyException, InputRequiredException, InterruptedException {
+    public static void streamCallWithCallback(String content, Consumer<MessagePojo> onEvent, Consumer<String> onError, Consumer<Integer> onComplete){
         System.out.println(content);
         Generation gen = new Generation();
         Message userMsg = Message.builder().role(Role.USER.getValue()).content(content).build();
@@ -40,40 +40,32 @@ public class TextUtils {
                 .incrementalOutput(true)
                 .build();
         Semaphore semaphore = new Semaphore(0);
-        gen.streamCall(param, new ResultCallback<GenerationResult>() {
-            @Override
-            public void onEvent(GenerationResult message) {
-                MessagePojo messagePojo = new MessagePojo();
-                messagePojo.init(message);
-                onEvent.accept(messagePojo);
-            }
+        try {
+            gen.streamCall(param, new ResultCallback<GenerationResult>() {
+                @Override
+                public void onEvent(GenerationResult message) {
+                    MessagePojo messagePojo = new MessagePojo();
+                    messagePojo.init(message);
+                    onEvent.accept(messagePojo);
+                }
 
-            @Override
-            public void onError(Exception err) {
-                semaphore.release();
-                System.out.println(err.getMessage());
-                onError.accept(err.getMessage());
-            }
+                @Override
+                public void onError(Exception err) {
+                    semaphore.release();
+                    System.out.println(err.getMessage());
+                    onError.accept(err.getMessage());
+                }
 
-            @Override
-            public void onComplete() {
-                semaphore.release();
-                onComplete.accept(0);
-            }
-
-        });
-        semaphore.acquire();
-    }
-
-    public static void main(String[] args) throws NoApiKeyException, InputRequiredException, InterruptedException {
-        String content="品牌起名及生成Slogan。产品所在行业是软件。产品的客户画像是用户。产品的特点优势是简单。品牌的价值主张是没有。品牌起名的要求是6340欧。品牌名字来源要求是包含某种动物的汉字。品牌Slogan要求是传递产品功能。";
-        streamCallWithCallback(content,messagePojo -> {
-            System.out.println(messagePojo.getContent());
-        },err->{
-
-        },status->{
-
-        });
+                @Override
+                public void onComplete() {
+                    semaphore.release();
+                    onComplete.accept(0);
+                }
+            });
+            semaphore.acquire();
+        } catch (NoApiKeyException | InputRequiredException | InterruptedException e) {
+            onError.accept(e.getMessage());
+        }
     }
 
     private static GenerationParam buildGenerationParam(Message userMsg) {
@@ -101,7 +93,6 @@ public class TextUtils {
            GenerationParam param = buildGenerationParam(userMsg);
            Flowable<GenerationResult> result = gen.streamCall(param);
            StringBuilder fullContent = new StringBuilder();
-
            result.blockingForEach(message -> handleGenerationResult(message, fullContent, onEvent,onError,onComplete));
        }catch (Exception e){
            onError.accept(e.getMessage());
