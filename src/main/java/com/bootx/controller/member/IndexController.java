@@ -86,6 +86,12 @@ public class IndexController extends BaseController {
         return Result.success(maps);
     }
 
+    /**
+     * 发送验证码
+     * @param deviceId
+     * @param mobile
+     * @return
+     */
     @PostMapping(value = "/sendCode")
     public Result sendCode(@RequestHeader String deviceId,String mobile){
         Member member = memberService.create(mobile, deviceId);
@@ -98,6 +104,13 @@ public class IndexController extends BaseController {
         return Result.error("信息校验失败");
     }
 
+    /**
+     * 登录
+     * @param deviceId
+     * @param mobile
+     * @param code
+     * @return
+     */
     @PostMapping(value = "/login")
     public Result login(@RequestHeader String deviceId,String mobile,String code){
         Member member = memberService.findByMobile(mobile);
