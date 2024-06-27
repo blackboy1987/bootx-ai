@@ -1,23 +1,16 @@
 package com.bootx.controller.member;
 
-import com.bootx.common.Pageable;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
-import com.bootx.entity.BaseEntity;
 import com.bootx.entity.Member;
 import com.bootx.entity.TextApp;
 import com.bootx.entity.TextAppTask;
-import com.bootx.security.CurrentUser;
-import com.bootx.service.CategoryAppTaskService;
 import com.bootx.service.MemberService;
 import com.bootx.service.TextAppService;
 import com.bootx.service.TextAppTaskService;
-import com.bootx.service.impl.MemberServiceImpl;
 import com.bootx.util.JsonUtils;
 import com.bootx.util.ali.TextUtils;
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
