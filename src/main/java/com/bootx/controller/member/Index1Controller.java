@@ -1,5 +1,6 @@
 package com.bootx.controller.member;
 
+import com.alibaba.dashscope.aigc.generation.GenerationResult;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
@@ -39,18 +40,7 @@ public class Index1Controller extends BaseController {
 
     @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> message(String content){
-        List<MessagePojo> list = new ArrayList<>();
-        AtomicReference<Integer> index = new AtomicReference<>(0);
-        new Thread(()->AiUtils.message(content, list::add)).start();
-        return Flux.interval(Duration.ofMillis(10)).onBackpressureBuffer().map(sequence -> {
-            try {
-                return list.get(index.getAndSet(index.get() + 1));
-            }catch (Exception e){
-                index.set(index.get()-1);
-                // 没有结束还有消息，但是list里面的消息已经获取完毕了
-                return MessagePojo.empty();
-            }
-        }).filter(item->!StringUtils.equalsIgnoreCase(item.getFinishReason(),"empty") && StringUtils.isNotEmpty(item.getContent())).takeUntil(item->StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop"));
+        return Flux.from(Objects.requireNonNull(AiUtils.message1(content)));
     }
 
     @GetMapping(value = "/vl",produces = MediaType.TEXT_EVENT_STREAM_VALUE)

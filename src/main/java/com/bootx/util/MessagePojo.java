@@ -91,7 +91,7 @@ public class MessagePojo implements Serializable {
         this.inputTokens = message.getUsage().getInputTokens();
         this.outputTokens = message.getUsage().getOutputTokens();
         this.totalTokens = message.getUsage().getTotalTokens();
-        this.finishReason = choice.getFinishReason();
+        this.finishReason = choice.getFinishReason()==null?"":choice.getFinishReason();
         this.role = choice.getMessage().getRole();
         this.content = choice.getMessage().getContent();
     }
