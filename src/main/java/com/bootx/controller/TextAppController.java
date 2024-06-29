@@ -1,6 +1,5 @@
 package com.bootx.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.bootx.common.Result;
 import com.bootx.util.JsonUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
