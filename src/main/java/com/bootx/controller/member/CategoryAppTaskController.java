@@ -1,29 +1,15 @@
 package com.bootx.controller.member;
 
-import com.alibaba.dashscope.exception.InputRequiredException;
-import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.bootx.common.Pageable;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.BaseEntity;
-import com.bootx.entity.CategoryApp;
-import com.bootx.entity.CategoryAppTask;
-import com.bootx.entity.Member;
-import com.bootx.security.CurrentUser;
-import com.bootx.service.CategoryAppService;
-import com.bootx.service.CategoryAppTaskResultService;
 import com.bootx.service.CategoryAppTaskService;
-import com.bootx.util.JsonUtils;
-import com.bootx.util.ali.TextUtils;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.Resource;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 /**
  * @author black

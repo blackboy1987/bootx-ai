@@ -33,6 +33,7 @@ public class AiUtils {
              */
             @Override
             public void onEvent(GenerationResult message) {
+                System.out.println(message.getOutput().getChoices().get(0).getFinishReason());
                 MessagePojo messagePojo = new MessagePojo();
                 messagePojo.init(message);
                 callback.accept(messagePojo);
@@ -44,6 +45,7 @@ public class AiUtils {
              */
             @Override
             public void onError(Exception err) {
+                callback.accept(MessagePojo.stop());
                 semaphore.release();
             }
 
@@ -52,6 +54,7 @@ public class AiUtils {
              */
             @Override
             public void onComplete() {
+                callback.accept(MessagePojo.stop());
                 semaphore.release();
             }
         });
