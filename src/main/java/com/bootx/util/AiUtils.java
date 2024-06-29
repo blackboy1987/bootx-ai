@@ -98,7 +98,7 @@ public class AiUtils {
         } catch (ApiException | NoApiKeyException | InputRequiredException e) {
             e.printStackTrace();
         }
-        return null;
+        return Flowable.just(MessagePojo.empty());
     }
 
     public static Flowable<MessagePojo> streamCallWithMessage(Generation gen, Message userMsg)

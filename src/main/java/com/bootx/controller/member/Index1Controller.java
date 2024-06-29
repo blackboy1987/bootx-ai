@@ -1,6 +1,5 @@
 package com.bootx.controller.member;
 
-import com.alibaba.dashscope.aigc.generation.GenerationResult;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
