@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,6 +43,20 @@ public class MemberRank extends BaseEntity<Long> {
 	@NotNull
 	@Column(nullable = false)
 	private Boolean isDefault;
+
+	/**
+	 * 是否推荐
+	 */
+	@NotNull
+	@Column(nullable = false)
+	private Boolean isRecommend;
+
+	private BigDecimal price;
+
+	private BigDecimal originalPrice;
+
+	private String memo;
+
 
 	/**
 	 * 会员
@@ -112,5 +127,38 @@ public class MemberRank extends BaseEntity<Long> {
 	 */
 	public void setMembers(Set<Member> members) {
 		this.members = members;
+	}
+
+
+	public Boolean getIsRecommend() {
+		return isRecommend;
+	}
+
+	public void setIsRecommend(Boolean isRecommend) {
+		this.isRecommend = isRecommend;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public BigDecimal getOriginalPrice() {
+		return originalPrice;
+	}
+
+	public void setOriginalPrice(BigDecimal originalPrice) {
+		this.originalPrice = originalPrice;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
 	}
 }

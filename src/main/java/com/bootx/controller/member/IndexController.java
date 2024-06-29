@@ -24,4 +24,6 @@ public class IndexController extends BaseController {
     @Resource
     private SmsLogService smsLogService;
 
+
+
 }

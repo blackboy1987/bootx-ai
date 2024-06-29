@@ -1,28 +1,32 @@
 package com.bootx.controller;
 
 import com.bootx.common.Result;
-import com.bootx.entity.Category;
-import com.bootx.entity.CategoryApp;
-import com.bootx.entity.Prompt;
-import com.bootx.entity.Topic;
+import com.bootx.entity.*;
 import com.bootx.pojo.CategoryAppPojo;
 import com.bootx.pojo.FormData;
 import com.bootx.pojo.FormData1;
 import com.bootx.pojo.TopicPojo;
-import com.bootx.service.CategoryAppService;
-import com.bootx.service.CategoryService;
-import com.bootx.service.PromptService;
-import com.bootx.service.TopicService;
+import com.bootx.service.*;
+import com.bootx.service.impl.TextAppCategoryServiceImpl;
+import com.bootx.service.impl.TextAppServiceImpl;
 import com.bootx.util.JsonUtils;
 import com.bootx.util.WebUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.Resource;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +48,10 @@ public class InitController {
 
     @Resource
     private CategoryAppService categoryAppService;
+    @Resource
+    private TextAppService textAppService;
+    @Resource
+    private TextAppCategoryService textAppCategoryService;
 
 
     @GetMapping("/topic")
@@ -141,9 +149,16 @@ public class InitController {
             }
 
         });
-
-
-
         return Result.success(categoryAppPojo);
+    }
+
+    public static void main(String[] args) throws IOException {
+        for (int i = 1; i < 1000; i++) {
+            String s = WebUtils.get("https://iflytts.oss-cn-qingdao.aliyuncs.com/website/img/webxzy/create" + i + ".png", null);
+            if(s.length()!=395&&s.length()!=394){
+                System.out.println(i+":"+s.length());
+            }
+
+        }
     }
 }
