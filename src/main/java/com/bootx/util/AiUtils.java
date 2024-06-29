@@ -10,6 +10,8 @@ import com.alibaba.dashscope.exception.ApiException;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.utils.Constants;
+import io.reactivex.Flowable;
+import reactor.adapter.rxjava.RxJava3Adapter;
 
 import java.util.Arrays;
 import java.util.concurrent.Semaphore;
@@ -89,5 +91,27 @@ public class AiUtils {
             streamCallWithCallback(gen, userMsg,callback);
         } catch (ApiException | NoApiKeyException | InputRequiredException | InterruptedException ignored) {
         }
+    }
+    public static Flowable<MessagePojo> message1(String content) {
+        Constants.apiKey = token;
+        try {
+            Generation gen = new Generation();
+            Message userMsg = Message.builder().role(Role.USER.getValue()).content(content).build();
+            return streamCallWithMessage(gen,userMsg);
+        } catch (ApiException | NoApiKeyException | InputRequiredException e) {
+            e.printStackTrace();
+        }
+        return Flowable.just(MessagePojo.empty());
+    }
+
+    public static Flowable<MessagePojo> streamCallWithMessage(Generation gen, Message userMsg)
+            throws NoApiKeyException, ApiException, InputRequiredException {
+        GenerationParam param = buildGenerationParam(userMsg);
+        Flowable<GenerationResult> result = gen.streamCall(param);
+        return result.map(message->{
+            MessagePojo messagePojo = new MessagePojo();
+            messagePojo.init(message);
+            return messagePojo;
+        });
     }
 }

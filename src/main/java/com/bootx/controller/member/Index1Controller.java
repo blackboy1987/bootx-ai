@@ -19,7 +19,6 @@ import reactor.core.publisher.Flux;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -40,30 +39,7 @@ public class Index1Controller extends BaseController {
 
     @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> message(String content){
-        List<MessagePojo> list = new ArrayList<>();
-        AtomicBoolean isTop = new AtomicBoolean(false);
-
-        AtomicReference<Integer> index = new AtomicReference<>(0);
-        new Thread(()->AiUtils.message(content, messagePojo -> {
-            if(StringUtils.equalsIgnoreCase(messagePojo.getFinishReason(),"stop")){
-                isTop.set(true);
-            }
-            list.add(messagePojo);
-
-        })).start();
-        return Flux.interval(Duration.ofMillis(10)).onBackpressureBuffer().map(sequence -> {
-            try {
-                MessagePojo messagePojo = list.get(index.getAndSet(index.get() + 1));
-                System.out.println(messagePojo.getFinishReason());
-                return messagePojo;
-            }catch (Exception e){
-                index.set(index.get()-1);
-                if(isTop.get()){
-                    return MessagePojo.stop();
-                }
-                return MessagePojo.empty();
-            }
-        }).filter(item->StringUtils.isNotEmpty(item.getContent())).takeUntil(item->StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop"));
+        return Flux.from(Objects.requireNonNull(AiUtils.message1(content)));
     }
 
     @GetMapping(value = "/vl",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
