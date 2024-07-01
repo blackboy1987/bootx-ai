@@ -10,6 +10,7 @@ import com.alibaba.dashscope.exception.ApiException;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.utils.Constants;
+import com.alibaba.dashscope.utils.JsonUtils;
 import io.reactivex.Flowable;
 
 import java.util.Arrays;
@@ -108,6 +109,7 @@ public class AiUtils {
         GenerationParam param = buildGenerationParam(userMsg);
         Flowable<GenerationResult> result = gen.streamCall(param);
         return result.map(message->{
+            System.out.println(JsonUtils.toJson(message));
             MessagePojo messagePojo = new MessagePojo();
             messagePojo.init(message);
             return messagePojo;

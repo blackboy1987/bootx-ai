@@ -27,7 +27,7 @@ public class HomeController extends BaseController {
         List<Map<String,Object>> apps = new ArrayList<>();
         Map<String,Object> map = new HashMap<>();
         map.put("title","热门创作");
-        map.put("list",jdbcTemplate.queryForList("select name,icon from textapp where icon is not null limit 140;"));
+        map.put("list",jdbcTemplate.queryForList("select name,icon,id from textapp where icon is not null limit 140;"));
         apps.add(map);
         data.put("apps",apps);
         return Result.success(data);

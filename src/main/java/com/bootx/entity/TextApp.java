@@ -1,9 +1,6 @@
 package com.bootx.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -17,6 +14,9 @@ public class TextApp extends OrderedEntity<Long>{
     private String memo;
 
     private String icon;
+
+    @Column(length = 4000)
+    private String formList;
 
     @NotNull
     @JoinColumn(nullable = false)
@@ -54,5 +54,13 @@ public class TextApp extends OrderedEntity<Long>{
 
     public void setTextAppCategory(TextAppCategory textAppCategory) {
         this.textAppCategory = textAppCategory;
+    }
+
+    public String getFormList() {
+        return formList;
+    }
+
+    public void setFormList(String formList) {
+        this.formList = formList;
     }
 }

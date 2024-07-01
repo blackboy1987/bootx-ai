@@ -6,11 +6,15 @@ import com.bootx.entity.TextApp;
 import com.bootx.entity.TextAppTask;
 import com.bootx.service.TextAppTaskService;
 import com.bootx.util.DateUtils;
+import com.bootx.util.JsonUtils;
 import com.bootx.util.MessagePojo;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Entity-CategoryAppTaskResultServiceImp
@@ -30,7 +34,19 @@ public class TextAppTaskServiceImpl extends BaseServiceImpl<TextAppTask,Long> im
         textAppTask.setMember(member);
         textAppTask.setParams(params);
         textAppTask.setStatus(0);
-        textAppTask.setPrompt("你是谁？");
+        // 根据params生成prompt
+        StringBuilder prompt = new StringBuilder(textAppTask.getAppName()+"。");
+        Map<String, Object> map = JsonUtils.toObject(textAppTask.getParams(), new TypeReference<Map<String, Object>>() {
+        });
+        for (String key : map.keySet()) {
+            if (
+                    !StringUtils.equalsAnyIgnoreCase("categoryAppId", key)
+                            && !StringUtils.equalsAnyIgnoreCase("categoryAppName", key)) {
+                prompt.append(key).append("是").append(map.get(key)).append("。");
+            }
+
+        }
+        textAppTask.setPrompt(prompt.toString());
         textAppTask.setTaskId(DateUtils.formatDateToString(new Date(), "yyyyMMddHHmmssSSS") + member.getId());
         return super.save(textAppTask);
     }
