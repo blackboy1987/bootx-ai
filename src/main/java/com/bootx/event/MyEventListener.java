@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyEventListener {
     @EventListener
-    public String handleEvent(String message) {
-        System.out.println("handleEvent:"+ message);
-        return message;
+    public void handleEvent(MyEvent myEvent) {
+        System.out.println("handleEvent:"+ myEvent.getData());
     }
 }

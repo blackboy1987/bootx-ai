@@ -2,18 +2,25 @@ package com.bootx.event;
 
 import org.springframework.context.ApplicationEvent;
 
+import java.util.Map;
+
+/**
+ * @author black
+ */
 public class MyEvent extends ApplicationEvent {
-    private String message;
 
-    public MyEvent(Object source) {
+    private Map<String,Object> data;
+
+    public MyEvent(Object source,Map<String,Object> data) {
         super(source);
+        this.data = data;
     }
 
-    public String getMessage() {
-        return message;
+    public Map<String, Object> getData() {
+        return data;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setData(Map<String, Object> data) {
+        this.data = data;
     }
 }

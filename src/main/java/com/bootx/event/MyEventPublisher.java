@@ -1,9 +1,9 @@
 package com.bootx.event;
 
-import com.bootx.util.JsonUtils;
-import com.bootx.util.MessagePojo;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * @author black
@@ -16,9 +16,7 @@ public class MyEventPublisher {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public void publishEvent(MyEvent myEvent,MessagePojo messagePojo) {
-        System.out.println("publishEvent:"+JsonUtils.toJson(messagePojo));
-        myEvent.setMessage(JsonUtils.toJson(messagePojo));
-        applicationEventPublisher.publishEvent(myEvent);
+    public void publishEvent(Map<String,Object> map) {
+        applicationEventPublisher.publishEvent(new MyEvent(this,map));
     }
 }

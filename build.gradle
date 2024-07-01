@@ -19,9 +19,8 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.1.8'
-    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.6.7'
-    implementation group: 'io.projectreactor.addons', name: 'reactor-adapter', version: '3.5.1'
+
+    implementation group: 'com.alipay.sdk', name: 'alipay-sdk-java', version: '4.39.113.ALL'
 
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
 
