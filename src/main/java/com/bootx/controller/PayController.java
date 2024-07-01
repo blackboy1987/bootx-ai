@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,9 @@ public class PayController {
 
     @GetMapping("payment")
     public void payment(String[] args) throws AlipayApiException {
+
+        // AES:X/5V3WQgG6T01NfSyNfBag==
+
         // 初始化SDK
         AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig());
 
@@ -134,9 +138,9 @@ public class PayController {
         certAlipayRequest.setFormat("json");
         certAlipayRequest.setCharset("UTF-8");
         certAlipayRequest.setSignType("RSA2");
-        certAlipayRequest.setCertPath("E:\\me\\bootx-ai\\src\\main\\resources\\cert\\APP_CERT_PATH.txt");
-        certAlipayRequest.setAlipayPublicCertPath("E:\\me\\bootx-ai\\src\\main\\resources\\cert\\alipayCertPublicKey_RSA2.crt");
-        certAlipayRequest.setRootCertPath("E:\\me\\bootx-ai\\src\\main\\resources\\cert\\alipayRootCert.crt");
+        certAlipayRequest.setCertPath(new File("D:/cert/appCertPublicKey_2021004156667072.crt").getAbsolutePath());
+        certAlipayRequest.setAlipayPublicCertPath(new File("D:/cert/alipayCertPublicKey_RSA2.crt").getAbsolutePath());
+        certAlipayRequest.setRootCertPath(new File("D:/cert/alipayRootCert.crt").getAbsolutePath());
         return certAlipayRequest;
     }
 }
