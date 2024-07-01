@@ -108,6 +108,10 @@ public class PayController {
         model.setMerchantOrderNo("20161008001");
 
         request.setBizModel(model);
+        request.setNeedEncrypt(true);
+        request.setBizContent("{" +
+                "\"merchant_app_id\":\"2021004156667072\"" +
+                "  }");
         // 第三方代调用模式下请设置app_auth_token
         // request.putOtherTextParam("app_auth_token", "<-- 请填写应用授权令牌 -->");
 
