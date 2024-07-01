@@ -134,11 +134,9 @@ public class PayController {
         certAlipayRequest.setFormat("json");
         certAlipayRequest.setCharset("UTF-8");
         certAlipayRequest.setSignType("RSA2");
-        certAlipayRequest.setCertPath(APP_CERT_PATH);
-        certAlipayRequest.setAlipayPublicCertPath(alipay_cert_path);
-        certAlipayRequest.setRootCertPath(alipayRootCert);
-
-
+        certAlipayRequest.setCertPath("E:\\me\\bootx-ai\\src\\main\\resources\\cert\\APP_CERT_PATH.txt");
+        certAlipayRequest.setAlipayPublicCertPath("E:\\me\\bootx-ai\\src\\main\\resources\\cert\\alipayCertPublicKey_RSA2.crt");
+        certAlipayRequest.setRootCertPath("E:\\me\\bootx-ai\\src\\main\\resources\\cert\\alipayRootCert.crt");
         return certAlipayRequest;
     }
 }
