@@ -23,6 +23,11 @@ public class TextApp extends OrderedEntity<Long>{
     @ManyToOne(fetch = FetchType.LAZY)
     private TextAppCategory textAppCategory;
 
+    @Column(length = 2000)
+    private String prompt;
+    @Column(length = 2000)
+    private String userPrompt;
+
 
     public String getName() {
         return name;
@@ -62,5 +67,21 @@ public class TextApp extends OrderedEntity<Long>{
 
     public void setFormList(String formList) {
         this.formList = formList;
+    }
+
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(String prompt) {
+        this.prompt = prompt;
+    }
+
+    public String getUserPrompt() {
+        return userPrompt;
+    }
+
+    public void setUserPrompt(String userPrompt) {
+        this.userPrompt = userPrompt;
     }
 }
