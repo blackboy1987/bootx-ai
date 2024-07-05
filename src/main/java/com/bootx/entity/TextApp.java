@@ -30,8 +30,10 @@ public class TextApp extends OrderedEntity<Long>{
     @ManyToOne(fetch = FetchType.LAZY)
     private TextAppCategory textAppCategory;
 
+    @JsonView({PageView.class})
     @Column(length = 2000)
     private String prompt;
+    @JsonView({PageView.class})
     @Column(length = 2000)
     private String userPrompt;
 
