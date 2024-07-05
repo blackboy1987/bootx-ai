@@ -1,7 +1,12 @@
 package com.bootx.entity;
 
+import com.bootx.common.BaseAttributeConverter;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AI 文本
@@ -9,20 +14,21 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 public class TextApp extends OrderedEntity<Long>{
 
+    @JsonView({PageView.class})
     private String name;
-
+    @JsonView({PageView.class})
     private String memo;
-
+    @JsonView({PageView.class})
     private String icon;
-
+    @JsonView({PageView.class})
     @Column(length = 4000)
-    private String formList;
+    @Convert(converter = FormItemConverter.class)
+    private List<FormItem> formList = new ArrayList<>();
 
     @NotNull
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private TextAppCategory textAppCategory;
-
 
     public String getName() {
         return name;
@@ -56,11 +62,16 @@ public class TextApp extends OrderedEntity<Long>{
         this.textAppCategory = textAppCategory;
     }
 
-    public String getFormList() {
+    public List<FormItem> getFormList() {
         return formList;
     }
 
-    public void setFormList(String formList) {
+    public void setFormList(List<FormItem> formList) {
         this.formList = formList;
+    }
+
+    @Convert
+    public static class FormItemConverter extends BaseAttributeConverter<List<FormItem>>{
+
     }
 }
