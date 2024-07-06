@@ -7,13 +7,7 @@ import java.util.List;
 
 public class FormItem implements Serializable {
 
-    public enum FormType{
-        INPUT,
-        NUMBER,
-        SELECT,
-        RADIO,
-    }
-
+    private String key;
 
     private String label;
 
@@ -21,7 +15,7 @@ public class FormItem implements Serializable {
 
     private List<String> options = new ArrayList<>();
 
-    private FormType formType;
+    private String formType;
 
     private Boolean isRequired;
 
@@ -35,6 +29,13 @@ public class FormItem implements Serializable {
 
     private Integer minLines;
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public String getLabel() {
         return label;
@@ -60,11 +61,11 @@ public class FormItem implements Serializable {
         this.options = options;
     }
 
-    public FormType getFormType() {
+    public String getFormType() {
         return formType;
     }
 
-    public void setFormType(FormType formType) {
+    public void setFormType(String formType) {
         this.formType = formType;
     }
 

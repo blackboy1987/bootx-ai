@@ -76,8 +76,8 @@ public class InitController {
             if(textApp==null){
                 textApp = new TextApp();
                 textApp.setTextAppCategory(textAppCategory);
-                textApp.setFormList(JsonUtils.toJson(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<Map<String,Object>>>() {
-                })));
+                /*textApp.setFormList(JsonUtils.toJson(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<Map<String,Object>>>() {
+                })));*/
                 textApp.setIcon(dataBean.getIcon());
                 textApp.setName(dataBean.getName());
                 textApp.setPrompt(dataBean.getPrompt());
@@ -85,8 +85,8 @@ public class InitController {
                 textApp.setUserPrompt(dataBean.getUserPrompt());
                 textAppService.save(textApp);
             }else{
-                textApp.setFormList(JsonUtils.toJson(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<Map<String,Object>>>() {
-                })));
+                /*textApp.setFormList(JsonUtils.toJson(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<Map<String,Object>>>() {
+                })));*/
                 textApp.setIcon(dataBean.getIcon());
                 textApp.setName(dataBean.getName());
                 textApp.setPrompt(dataBean.getPrompt());
