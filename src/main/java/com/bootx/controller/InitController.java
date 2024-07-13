@@ -1,6 +1,7 @@
 package com.bootx.controller;
 
 import com.bootx.common.Result;
+import com.bootx.entity.FormItem;
 import com.bootx.entity.TextApp;
 import com.bootx.entity.TextAppCategory;
 import com.bootx.service.*;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +45,7 @@ public class InitController {
     private TextAppCategoryService textAppCategoryService;
 
 
-    @PostMapping("/topic")
+    @GetMapping("/topic")
     public Result init(String str) {
 
         List<CategoryAppDetail.DataBean> list = new ArrayList<>();
@@ -76,8 +78,8 @@ public class InitController {
             if(textApp==null){
                 textApp = new TextApp();
                 textApp.setTextAppCategory(textAppCategory);
-                /*textApp.setFormList(JsonUtils.toJson(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<Map<String,Object>>>() {
-                })));*/
+                textApp.setFormList(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<FormItem>>() {
+                }));
                 textApp.setIcon(dataBean.getIcon());
                 textApp.setName(dataBean.getName());
                 textApp.setPrompt(dataBean.getPrompt());
@@ -85,8 +87,8 @@ public class InitController {
                 textApp.setUserPrompt(dataBean.getUserPrompt());
                 textAppService.save(textApp);
             }else{
-                /*textApp.setFormList(JsonUtils.toJson(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<Map<String,Object>>>() {
-                })));*/
+                textApp.setFormList(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<FormItem>>() {
+                }));
                 textApp.setIcon(dataBean.getIcon());
                 textApp.setName(dataBean.getName());
                 textApp.setPrompt(dataBean.getPrompt());

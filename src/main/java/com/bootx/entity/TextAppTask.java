@@ -48,11 +48,6 @@ public class TextAppTask extends BaseEntity<Long> {
     @JsonView({PageView.class})
     private Integer status;
 
-    private Date taskBeginDate;
-
-    @JsonView({PageView.class})
-    private Date taskEndDate;
-
     @Column(columnDefinition = "longtext")
     private String result;
 
@@ -102,22 +97,6 @@ public class TextAppTask extends BaseEntity<Long> {
 
     public void setStatus(@NotNull Integer status) {
         this.status = status;
-    }
-
-    public Date getTaskBeginDate() {
-        return taskBeginDate;
-    }
-
-    public void setTaskBeginDate(Date taskBeginDate) {
-        this.taskBeginDate = taskBeginDate;
-    }
-
-    public Date getTaskEndDate() {
-        return taskEndDate;
-    }
-
-    public void setTaskEndDate(Date taskEndDate) {
-        this.taskEndDate = taskEndDate;
     }
 
     public String getResult() {

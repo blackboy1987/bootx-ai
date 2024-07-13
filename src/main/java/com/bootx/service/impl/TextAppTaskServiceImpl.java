@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,19 +35,17 @@ public class TextAppTaskServiceImpl extends BaseServiceImpl<TextAppTask,Long> im
         textAppTask.setMember(member);
         textAppTask.setParams(params);
         textAppTask.setStatus(0);
-        // 根据params生成prompt
-        StringBuilder prompt = new StringBuilder(textAppTask.getAppName()+"。");
         Map<String, Object> map = JsonUtils.toObject(textAppTask.getParams(), new TypeReference<Map<String, Object>>() {
         });
+        String prompt = textApp.getUserPrompt();
+        System.out.println(params);
+        System.out.println(prompt);
         for (String key : map.keySet()) {
-            if (
-                    !StringUtils.equalsAnyIgnoreCase("categoryAppId", key)
-                            && !StringUtils.equalsAnyIgnoreCase("categoryAppName", key)) {
-                prompt.append(key).append("是").append(map.get(key)).append("。");
-            }
-
+            prompt = prompt.replace("{" + key + "}", map.get(key).toString());
         }
-        textAppTask.setPrompt(prompt.toString());
+        System.out.println(prompt);
+
+        textAppTask.setPrompt(prompt);
         textAppTask.setTaskId(DateUtils.formatDateToString(new Date(), "yyyyMMddHHmmssSSS") + member.getId());
         return super.save(textAppTask);
     }
@@ -54,14 +53,12 @@ public class TextAppTaskServiceImpl extends BaseServiceImpl<TextAppTask,Long> im
     @Override
     public void error(TextAppTask textAppTask) {
         textAppTask.setStatus(4);
-        textAppTask.setTaskEndDate(new Date());
         super.update(textAppTask);
     }
 
     @Override
     public void complete(TextAppTask textAppTask) {
         textAppTask.setStatus(2);
-        textAppTask.setTaskEndDate(new Date());
         super.update(textAppTask);
     }
 
@@ -69,7 +66,6 @@ public class TextAppTaskServiceImpl extends BaseServiceImpl<TextAppTask,Long> im
     public void start(TextAppTask textAppTask) {
         textAppTask.setStatus(1);
         textAppTask.setResult("");
-        textAppTask.setTaskBeginDate(new Date());
         super.update(textAppTask);
     }
 

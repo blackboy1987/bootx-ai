@@ -1,10 +1,13 @@
 package com.bootx.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FormItem implements Serializable {
 
     private String key;
@@ -30,10 +33,16 @@ public class FormItem implements Serializable {
     private Integer minLines;
 
     public String getKey() {
+        if(StringUtils.isBlank(key)){
+            key = System.nanoTime()+"";
+        }
         return key;
     }
 
     public void setKey(String key) {
+        if(StringUtils.isBlank(key)){
+            key = System.nanoTime()+"";
+        }
         this.key = key;
     }
 
