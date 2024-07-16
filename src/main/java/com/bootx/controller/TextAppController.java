@@ -93,4 +93,10 @@ public class TextAppController extends BaseController {
 
         return Result.success(map);
     }
+
+    @PostMapping("/search")
+    private Result search(String keywords){
+        System.out.println(keywords);
+        return Result.success(jdbcTemplate.queryForList("select id,name,memo,icon from textApp where name like ?","%"+keywords+"%"));
+    }
 }

@@ -24,7 +24,10 @@ public class IndexController extends BaseController {
     private Result check(@CurrentUser Member member, HttpServletRequest request,String version){
         return Result.success();
     }
-
+    @PostMapping("/adviser")
+    private Result adviser(@CurrentUser Member member, HttpServletRequest request,String version){
+        return Result.success(jdbcTemplate.queryForList("select * from textApp"));
+    }
 
 
 }
