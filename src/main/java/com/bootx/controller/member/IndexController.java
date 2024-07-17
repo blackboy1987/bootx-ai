@@ -36,5 +36,4 @@ public class IndexController extends BaseController {
         return Flux.from(Objects.requireNonNull(AiUtils.message1(content)));
     }
 
-
 }

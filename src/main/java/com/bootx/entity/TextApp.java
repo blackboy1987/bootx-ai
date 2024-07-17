@@ -37,6 +37,13 @@ public class TextApp extends OrderedEntity<Long>{
     @Column(length = 2000)
     private String userPrompt;
 
+    /**
+     * 1: 对话
+     */
+    @NotNull
+    @Column(nullable = false)
+    private Integer type;
+
 
     public String getName() {
         return name;
@@ -92,6 +99,14 @@ public class TextApp extends OrderedEntity<Long>{
 
     public void setUserPrompt(String userPrompt) {
         this.userPrompt = userPrompt;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     @Convert
