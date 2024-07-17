@@ -37,10 +37,7 @@ public class Index1Controller extends BaseController {
     @Resource
     private SmsLogService smsLogService;
 
-    @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<MessagePojo> message(String content){
-        return Flux.from(Objects.requireNonNull(AiUtils.message1(content)));
-    }
+
 
     @GetMapping(value = "/vl",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> vl(String image,String content){

@@ -7,6 +7,7 @@ import com.bootx.entity.TextAppCategory;
 import com.bootx.service.*;
 import com.bootx.util.JsonUtils;
 import com.bootx.util.WebUtils;
+import com.bootx.util.caiji.hbsry.HbsryUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -43,6 +44,18 @@ public class InitController {
     private TextAppService textAppService;
     @Resource
     private TextAppCategoryService textAppCategoryService;
+
+    @GetMapping("/adviser")
+    public Result adviser() {
+        TextAppCategory textAppCategory = textAppCategoryService.find(1L);
+        List<TextApp> main = HbsryUtils.adviser();
+        for (TextApp textApp : main) {
+            textApp.setTextAppCategory(textAppCategory);
+            textAppService.save(textApp);
+        }
+
+        return Result.success();
+    }
 
 
     @GetMapping("/topic")

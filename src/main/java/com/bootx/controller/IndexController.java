@@ -20,11 +20,21 @@ import java.util.Map;
 @RequestMapping("/api")
 public class IndexController extends BaseController {
 
+    /**
+     * 检测是否需要升级
+     * @param member
+     * @param request
+     * @param version
+     * @return
+     */
     @PostMapping("/check")
     private Result check(@CurrentUser Member member, HttpServletRequest request,String version){
         return Result.success();
     }
 
-
+    @PostMapping("/adviser")
+    private Result adviser(@CurrentUser Member member, HttpServletRequest request,String version){
+        return Result.success(jdbcTemplate.queryForList("select id,icon,name,memo from textapp where type=1"));
+    }
 
 }
