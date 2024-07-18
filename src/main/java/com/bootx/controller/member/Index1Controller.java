@@ -98,7 +98,7 @@ public class Index1Controller extends BaseController {
     }
 
     @PostMapping(value = "/task")
-    public Result task(@RequestHeader String deviceId,@CurrentUser Member member,String taskId){
+    public Result task(@CurrentUser Member member,String taskId){
         return Result.success(AliCommonUtils.getTask(taskId));
     }
 

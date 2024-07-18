@@ -47,7 +47,7 @@ public class WriteController extends BaseController {
     }
 
     @GetMapping(value = "/load",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<MessagePojo> load(@RequestHeader String deviceId, String taskId){
+    public Flux<MessagePojo> load(String taskId){
         TextAppTask textAppTask = textAppTaskService.findByTaskId(taskId);
         return Flux.from(Objects.requireNonNull(AiUtils.message1(textAppTask.getPrompt())));
     }

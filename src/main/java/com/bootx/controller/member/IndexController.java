@@ -3,6 +3,7 @@ package com.bootx.controller.member;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
+import com.bootx.security.CurrentUser;
 import com.bootx.service.ImageTaskService;
 import com.bootx.service.MemberService;
 import com.bootx.service.SmsLogService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -49,9 +51,9 @@ public class IndexController extends BaseController {
     public Result login(@RequestHeader String deviceId, String mobile, String code){
         Member member = memberService.findByMobile(mobile);
         String s = redisService.get("login:" + mobile + ":" + deviceId);
-        if(!StringUtils.equalsAnyIgnoreCase(s,code)){
+        /*if(!StringUtils.equalsAnyIgnoreCase(s,code)){
             return Result.error("验证码输入错误");
-        }
+        }*/
         return Result.success(JWTUtils.create(member.getId()+"",new HashMap<>()));
     }
 
@@ -72,5 +74,25 @@ public class IndexController extends BaseController {
             return Result.success();
         }
         return Result.error("信息校验失败");
+    }
+
+
+    /**
+     *
+     * @param deviceId
+     * @param ip
+     * @param token
+     * @return
+     */
+    @PostMapping(value = "/currentUser")
+    public Result currentUser(@CurrentUser Member member){
+        if(member==null){
+            return Result.error("未登录");
+        }
+        Map<String,Object> data = new HashMap<>();
+        data.put("username",member.getUsername());
+        data.put("mobile",member.getMobile());
+        data.put("isVip",!member.getMemberRank().getIsDefault());
+        return Result.success(member);
     }
 }
