@@ -5,16 +5,12 @@ import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
 import com.bootx.entity.TextAppTask;
 import com.bootx.security.CurrentUser;
-import com.bootx.service.MemberService;
-import com.bootx.service.TextAppService;
 import com.bootx.service.TextAppTaskService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.netty.http.server.HttpServer;
-import reactor.netty.http.server.HttpServerRequest;
 
 import java.util.Enumeration;
 import java.util.List;
@@ -28,15 +24,10 @@ import java.util.Map;
 public class WriteTaskController extends BaseController {
 
     @Resource
-    private TextAppService textAppService;
-
-    @Resource
     private TextAppTaskService textAppTaskService;
-    @Resource
-    private MemberService memberService;
 
     @PostMapping(value = "/save")
-    public Result write(@CurrentUser Member member, String taskId, String content, HttpServletRequest request) {
+    public Result save(@CurrentUser Member member, String taskId, String content, HttpServletRequest request) {
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()){
             String headerName = headerNames.nextElement();
@@ -45,6 +36,7 @@ public class WriteTaskController extends BaseController {
         TextAppTask byTaskId = textAppTaskService.findByTaskId(taskId);
         if(byTaskId!=null){
             byTaskId.setResult(content);
+            byTaskId.setStatus(2);
             textAppTaskService.update(byTaskId);
         }
         return Result.success();

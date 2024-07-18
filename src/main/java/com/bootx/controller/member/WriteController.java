@@ -11,6 +11,7 @@ import com.bootx.service.TextAppTaskService;
 import com.bootx.util.AiUtils;
 import com.bootx.util.MessagePojo;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -49,6 +50,17 @@ public class WriteController extends BaseController {
     @GetMapping(value = "/load",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> load(String taskId){
         TextAppTask textAppTask = textAppTaskService.findByTaskId(taskId);
-        return Flux.from(Objects.requireNonNull(AiUtils.message1(textAppTask.getPrompt())));
+        if(textAppTask==null||textAppTask.getStatus()!=1){
+            return Flux.empty();
+        }
+        return Flux.from(Objects.requireNonNull(AiUtils.message1(textAppTask.getPrompt()))).takeUntil(item-> {
+            if(StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop")){
+                // 任务完成
+                textAppTask.setStatus(2);
+                textAppTaskService.update(textAppTask);
+                return true;
+            }
+            return false;
+        });
     }
 }
