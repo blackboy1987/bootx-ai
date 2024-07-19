@@ -24,12 +24,12 @@ public class IndexController extends BaseController {
      * 检测是否需要升级
      * @param member
      * @param request
-     * @param version
+     * @param versionName
      * @return
      */
     @PostMapping("/check")
-    private Result check(@CurrentUser Member member, HttpServletRequest request,String version){
-        return Result.success();
+    private Result check(@CurrentUser Member member, HttpServletRequest request,String versionName){
+        return Result.success(1,"http://file.igomall.xin/aishangai_1.1.2.apk");
     }
 
     @PostMapping("/adviser")

@@ -79,6 +79,7 @@ public class InitController {
                 list.add(data);
             });
         }
+
         for (CategoryAppDetail.DataBean dataBean : list) {
             TextAppCategory textAppCategory = textAppCategoryService.findByName(dataBean.getCategoryName());
             if(textAppCategory==null){
