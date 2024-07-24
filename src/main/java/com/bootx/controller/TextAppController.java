@@ -24,7 +24,7 @@ public class TextAppController extends BaseController {
 
     @PostMapping("/category")
     private Result category(){
-        String s = redisService.get("category");
+        String s = redisService.get("category2");
         List<Map<String, Object>> maps = new ArrayList<>();
         try {
             maps = JsonUtils.toObject(s, new TypeReference<List<Map<String, Object>>>() {

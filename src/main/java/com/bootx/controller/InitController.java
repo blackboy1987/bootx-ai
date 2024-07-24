@@ -8,6 +8,7 @@ import com.bootx.service.*;
 import com.bootx.util.JsonUtils;
 import com.bootx.util.WebUtils;
 import com.bootx.util.caiji.hbsry.HbsryUtils;
+import com.bootx.util.caiji.xiaoyutai.XiaoyutaiUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -285,5 +286,50 @@ public class InitController {
                 this.keywords = keywords;
             }
         }
+    }
+
+    @PostMapping("/2")
+    private Result init2(){
+        List<TextApp> all = new ArrayList<>();
+        all.addAll(XiaoyutaiUtils.get("60891d5e8ed54e32"));
+        all.addAll(XiaoyutaiUtils.get("0e94d252e9753186"));
+        all.addAll(XiaoyutaiUtils.get("26e98d5193153701"));
+        for (TextApp textApp : all) {
+            TextAppCategory parent = textApp.getTextAppCategory().getParent();
+            TextAppCategory textAppCategory = textApp.getTextAppCategory();
+
+            TextAppCategory parent1 = textAppCategoryService.findByName(parent.getName());
+            if(parent1==null){
+                parent1 = new TextAppCategory();
+                parent1.setName(parent.getName());
+                parent1.setIcon(parent.getIcon());
+                parent1.setMemo(parent.getMemo());
+                parent = textAppCategoryService.save(parent1);
+            }else{
+                parent = parent1;
+            }
+            TextAppCategory textAppCategory1 = textAppCategoryService.findByName(textAppCategory.getName());
+            if(textAppCategory1==null){
+                textAppCategory1 = new TextAppCategory();
+                textAppCategory1.setParent(parent);
+                textAppCategory1.setName(textAppCategory.getName());
+                textAppCategory1.setIcon(textAppCategory.getIcon());
+                textAppCategory1.setMemo(textAppCategory.getMemo());
+                textAppCategory = textAppCategoryService.save(textAppCategory1);
+            }else{
+                textAppCategory = textAppCategory1;
+            }
+            textApp.setTextAppCategory(textAppCategory);
+            try {
+                textAppService.save(textApp);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+
+
+
+        return Result.success();
     }
 }
