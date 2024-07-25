@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service - 商品分类
@@ -90,7 +91,11 @@ public class TextAppCategoryServiceImpl extends BaseServiceImpl<TextAppCategory,
 
 	@Override
 	public TextAppCategory findByName(String name) {
-		return textAppCategoryDao.find("name",name);
+		List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id from textappcategory where name=? limit 1", name);
+		if(maps.isEmpty()){
+			return null;
+		}
+		return super.find(Long.valueOf(maps.getFirst().get("id").toString()));
 	}
 
 	@Override
@@ -150,10 +155,11 @@ public class TextAppCategoryServiceImpl extends BaseServiceImpl<TextAppCategory,
 		TextAppCategory parent = textAppCategory.getParent();
 		if (parent != null) {
 			textAppCategory.setTreePath(parent.getTreePath() + parent.getId() + TextAppCategory.TREE_PATH_SEPARATOR);
+			textAppCategory.setGrade(0);
 		} else {
 			textAppCategory.setTreePath(TextAppCategory.TREE_PATH_SEPARATOR);
+			textAppCategory.setGrade(0);
 		}
-		textAppCategory.setGrade(textAppCategory.getParentIds().length);
 	}
 
 }

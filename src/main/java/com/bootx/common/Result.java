@@ -66,6 +66,11 @@ public final class Result {
 
 	}
 
+	public static Result success(Integer code,Object data) {
+		return new Result(code,"操作成功",data);
+
+	}
+
 	public static Result error(String msg) {
 		return new Result(-1, msg,null);
 	}
