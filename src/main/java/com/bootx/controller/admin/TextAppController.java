@@ -13,6 +13,7 @@ import com.bootx.util.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,10 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author black
@@ -51,7 +49,21 @@ public class TextAppController extends BaseController {
             return Result.success(Collections.EMPTY_LIST);
         }
         try {
-            return Result.success(textApp.getFormList());
+            return Result.success(textApp.getFormList().stream().map(item->{
+                Map<String,Object> map = new HashMap<>();
+                map.put("value",item.getValue());
+                map.put("key",item.getKey());
+                map.put("label",item.getLabel());
+                map.put("options", StringUtils.join(item.getOptions(),","));
+                map.put("formType",item.getFormType());
+                map.put("isRequired",item.getIsRequired());
+                map.put("placeholder",item.getPlaceholder());
+                map.put("min",item.getMin());
+                map.put("max",item.getMax());
+                map.put("maxLines",item.getMaxLines());
+                map.put("minLines",item.getMinLines());
+                return map;
+            }));
         }catch (Exception e){
             e.printStackTrace();
             textApp.setFormList(new ArrayList<>());

@@ -8,10 +8,12 @@ import com.bootx.service.*;
 import com.bootx.util.JsonUtils;
 import com.bootx.util.WebUtils;
 import com.bootx.util.caiji.hbsry.HbsryUtils;
+import com.bootx.util.caiji.yisixiezuo.YisixiezuoUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,41 +94,84 @@ public class InitController {
                 textApp = new TextApp();
                 textApp.setTextAppCategory(textAppCategory);
                 textApp.setFormList(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<FormItem>>() {
-                }));
+                }).stream().peek(item-> {
+                    item.setValue("");
+                    if(StringUtils.equals(item.getFormType(),"input")||StringUtils.equals(item.getFormType(),"textarea")){
+                        item.setFormType("text");
+                        item.setMinLines(8);
+                        item.setMaxLines(8);
+                    }else if(StringUtils.equals(item.getFormType(),"select")){
+                        item.setFormType("radio");
+                    }else if(StringUtils.equals(item.getFormType(),"multiSelect")){
+                        item.setFormType("select");
+                    }else if(StringUtils.equals(item.getFormType(),"keywords")){
+                        item.setFormType("text");
+                        item.setMinLines(4);
+                        item.setMaxLines(4);
+                    }
+                }).toList());
                 textApp.setIcon(dataBean.getIcon());
                 textApp.setName(dataBean.getName());
                 textApp.setPrompt(dataBean.getPrompt());
                 textApp.setMemo(dataBean.getInfo());
                 textApp.setUserPrompt(dataBean.getUserPrompt());
+                textApp.setType(0);
                 textAppService.save(textApp);
             }else{
                 textApp.setFormList(JsonUtils.toObject(dataBean.getForm(), new TypeReference<List<FormItem>>() {
-                }));
+                }).stream().peek(item-> {
+                    item.setValue("");
+                    if(StringUtils.equals(item.getFormType(),"input")||StringUtils.equals(item.getFormType(),"textarea")){
+                        item.setFormType("text");
+                        item.setMinLines(8);
+                        item.setMaxLines(8);
+                    }else if(StringUtils.equals(item.getFormType(),"select")){
+                        item.setFormType("radio");
+                    }else if(StringUtils.equals(item.getFormType(),"multiSelect")){
+                        item.setFormType("select");
+                    }else if(StringUtils.equals(item.getFormType(),"keywords")){
+                        item.setFormType("text");
+                        item.setMinLines(4);
+                        item.setMaxLines(4);
+                    }
+                }).toList());
                 textApp.setIcon(dataBean.getIcon());
                 textApp.setName(dataBean.getName());
                 textApp.setPrompt(dataBean.getPrompt());
                 textApp.setMemo(dataBean.getInfo());
                 textApp.setUserPrompt(dataBean.getUserPrompt());
+                textApp.setType(0);
                 textAppService.update(textApp);
             }
-
-
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
         return Result.success(list);
     }
+
+    @GetMapping("/topic1")
+    public Result topic1() {
+
+        List<TextApp> textApps = YisixiezuoUtils.get();
+        for (TextApp textApp : textApps) {
+            TextAppCategory textAppCategory = textAppCategoryService.findByName(textApp.getTextAppCategory().getName());
+            if(textAppCategory==null){
+                textAppCategory = new TextAppCategory();
+                textAppCategory.setName(textApp.getTextAppCategory().getName());
+                textAppCategory = textAppCategoryService.save(textAppCategory);
+            }
+            textApp.setTextAppCategory(textAppCategory);
+            textAppService.save(textApp);
+        }
+
+        return Result.success();
+    }
+
+
+
+
+
+
+
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Category{
         private List<DataBean> data = new ArrayList<>();

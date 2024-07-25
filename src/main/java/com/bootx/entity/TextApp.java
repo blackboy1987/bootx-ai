@@ -21,7 +21,7 @@ public class TextApp extends OrderedEntity<Long>{
     @JsonView({PageView.class})
     private String icon;
     @JsonView({PageView.class})
-    @Column(length = 4000)
+    @Column(length = 8000)
     @Convert(converter = FormItemConverter.class)
     private List<FormItem> formList = new ArrayList<>();
 
@@ -37,8 +37,9 @@ public class TextApp extends OrderedEntity<Long>{
     @Column(length = 2000)
     private String userPrompt;
 
-    /**
-     * 1: 对话
+    /**0：创作
+     * 1：顾问
+     * 2: 办公
      */
     @NotNull
     @Column(nullable = false)

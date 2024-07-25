@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author blackboy1987
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FormItem implements Serializable {
 
@@ -55,10 +58,16 @@ public class FormItem implements Serializable {
     }
 
     public String getValue() {
+        if(StringUtils.isBlank(value)){
+            key = "";
+        }
         return value;
     }
 
     public void setValue(String value) {
+        if(StringUtils.isBlank(value)){
+            key = "";
+        }
         this.value = value;
     }
 
