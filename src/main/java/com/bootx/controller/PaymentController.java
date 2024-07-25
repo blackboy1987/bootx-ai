@@ -2,9 +2,14 @@ package com.bootx.controller;
 
 import com.alipay.api.*;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
+import com.alipay.api.domain.Member;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.bootx.common.Result;
+import com.bootx.security.CurrentUser;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,9 +24,24 @@ import java.io.File;
 public class PaymentController {
 
     @PostMapping("create")
-    public Result create() throws AlipayApiException {
+    public Result create(HttpServletRequest request, @CurrentUser Member member,Integer type) throws AlipayApiException {
+        String token = request.getHeader("token");
+        String deviceId = request.getHeader("deviceId");
+        String ip = request.getHeader("ip");
+        if(StringUtils.isBlank(token) || StringUtils.isBlank(deviceId) || StringUtils.isBlank(ip)||type==null){
+            return Result.error("非法请求");
+        }
+        if(type == 1){
+            // 升级会员
+        }else{
+            return Result.error("非法请求");
+        }
+
+
+
+
         AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig());
-        AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
+        AlipayTradeAppPayRequest payRequest = new AlipayTradeAppPayRequest();
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
         model.setBody("我是测试数据");
         model.setSubject("App支付测试Java");
@@ -29,10 +49,10 @@ public class PaymentController {
         model.setTimeoutExpress("30m");
         model.setTotalAmount("0.01");
         model.setProductCode("QUICK_MSECURITY_PAY");
-        request.setBizModel(model);
-        request.setNotifyUrl("商户外网可以访问的异步地址");
+        payRequest.setBizModel(model);
+        payRequest.setNotifyUrl("商户外网可以访问的异步地址");
         try {
-            AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
+            AlipayTradeAppPayResponse response = alipayClient.sdkExecute(payRequest);
             System.out.println(response.getBody());
             return Result.success(response.getBody());
         } catch (AlipayApiException e) {
