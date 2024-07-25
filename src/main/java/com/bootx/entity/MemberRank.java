@@ -64,6 +64,8 @@ public class MemberRank extends BaseEntity<Long> {
 	@OneToMany(mappedBy = "memberRank", fetch = FetchType.LAZY)
 	private Set<Member> members = new HashSet<>();
 
+	private Integer days;
+
 	/**
 	 * 获取名称
 	 * 
@@ -160,5 +162,13 @@ public class MemberRank extends BaseEntity<Long> {
 
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+
+	public Integer getDays() {
+		return days;
+	}
+
+	public void setDays(Integer days) {
+		this.days = days;
 	}
 }

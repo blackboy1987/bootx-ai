@@ -12,10 +12,9 @@ import java.math.BigDecimal;
  * @version 6.1
  */
 public interface MemberRankDao extends BaseDao<MemberRank, Long> {
-
 	/**
 	 * 查找默认会员等级
-	 * 
+	 *
 	 * @return 默认会员等级，若不存在则返回null
 	 */
 	MemberRank findDefault();
@@ -23,11 +22,11 @@ public interface MemberRankDao extends BaseDao<MemberRank, Long> {
 	/**
 	 * 根据消费金额查找符合此条件的最高会员等级
 	 *
-	 * @param point
+	 * @param amount
 	 *            消费金额
 	 * @return 会员等级，不包含特殊会员等级，若不存在则返回null
 	 */
-	MemberRank findByPoint(Long point);
+	MemberRank findByAmount(BigDecimal amount);
 
 	/**
 	 * 清除默认
@@ -36,7 +35,7 @@ public interface MemberRankDao extends BaseDao<MemberRank, Long> {
 
 	/**
 	 * 清除默认
-	 * 
+	 *
 	 * @param exclude
 	 *            排除会员等级
 	 */

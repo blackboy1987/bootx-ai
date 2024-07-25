@@ -27,15 +27,17 @@ public class MemberRankDaoImpl extends BaseDaoImpl<MemberRank, Long> implements 
 			return null;
 		}
 	}
+
 	@Override
-	public MemberRank findByPoint(Long point) {
+	public MemberRank findByAmount(BigDecimal originalPrice) {
 		try {
-			String jpql = "select memberRank from MemberRank memberRank where memberRank.point <= :point order by memberRank.point desc";
-			return entityManager.createQuery(jpql, MemberRank.class).setParameter("point", point).setMaxResults(1).getSingleResult();
+			String jpql = "select memberRank from MemberRank memberRank where memberRank.originalPrice <= :originalPrice order by memberRank.originalPrice desc";
+			return entityManager.createQuery(jpql, MemberRank.class).setParameter("originalPrice", originalPrice).setMaxResults(1).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
+
 	@Override
 	public void clearDefault() {
 		String jpql = "update MemberRank memberRank set memberRank.isDefault = false where memberRank.isDefault = true";
@@ -49,5 +51,4 @@ public class MemberRankDaoImpl extends BaseDaoImpl<MemberRank, Long> implements 
 		String jpql = "update MemberRank memberRank set memberRank.isDefault = false where memberRank.isDefault = true and memberRank != :exclude";
 		entityManager.createQuery(jpql).setParameter("exclude", exclude).executeUpdate();
 	}
-
 }

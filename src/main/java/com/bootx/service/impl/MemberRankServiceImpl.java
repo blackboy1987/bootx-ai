@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.math.BigDecimal;
+
 /**
  * Service - 会员等级
  * 
@@ -24,14 +26,14 @@ public class MemberRankServiceImpl extends BaseServiceImpl<MemberRank, Long> imp
 
 	@Override
 	@Transactional(readOnly = true)
-	public boolean pointExists(Long point) {
-		return memberRankDao.exists("point", point);
+	public boolean amountExists(BigDecimal amount) {
+		return memberRankDao.exists("amount", amount);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public boolean pointUnique(Long id, Long point) {
-		return memberRankDao.unique(id, "point", point);
+	public boolean amountUnique(Long id, BigDecimal amount) {
+		return memberRankDao.unique(id, "originalPrice", amount);
 	}
 
 	@Override
@@ -42,8 +44,8 @@ public class MemberRankServiceImpl extends BaseServiceImpl<MemberRank, Long> imp
 
 	@Override
 	@Transactional(readOnly = true)
-	public MemberRank findByPoint(Long point) {
-		return memberRankDao.findByPoint(point);
+	public MemberRank findByAmount(BigDecimal amount) {
+		return memberRankDao.findByAmount(amount);
 	}
 
 	@Override
@@ -68,5 +70,4 @@ public class MemberRankServiceImpl extends BaseServiceImpl<MemberRank, Long> imp
 		}
 		return pMemberRank;
 	}
-
 }

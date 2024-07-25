@@ -53,5 +53,10 @@ public class IndexController extends BaseController {
         return Result.success(data);
     }
 
+    @PostMapping("/memberRank")
+    private Result memberRank(HttpServletRequest request){
+        List<Map<String, Object>> data = jdbcTemplate.queryForList("select id,name,isRecommend,memo,originalPrice,price,days from memberrank where isDefault=false order by originalPrice asc ;");
+        return Result.success(data);
+    }
 
 }
