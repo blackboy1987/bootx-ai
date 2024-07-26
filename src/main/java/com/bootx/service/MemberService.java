@@ -3,6 +3,7 @@ package com.bootx.service;
 
 import com.bootx.common.Pageable;
 import com.bootx.entity.Member;
+import com.bootx.entity.MemberRank;
 
 import java.util.List;
 import java.util.Map;
@@ -26,4 +27,6 @@ public interface MemberService extends BaseService<Member, Long> {
 	Member findByMobile(String deviceId);
 
     Member create(String mobile, String deviceId);
+
+    void upgradeMemberRank(Member member, MemberRank memberRank);
 }

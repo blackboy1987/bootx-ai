@@ -4,6 +4,7 @@ package com.bootx.service.impl;
 import com.bootx.common.Pageable;
 import com.bootx.dao.MemberDao;
 import com.bootx.entity.Member;
+import com.bootx.entity.MemberRank;
 import com.bootx.service.MemberRankService;
 import com.bootx.service.MemberService;
 import com.bootx.util.JWTUtils;
@@ -98,6 +99,16 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 			return super.save(member);
 		}
 		return member;
+	}
+
+	@Override
+	public void upgradeMemberRank(Member member, MemberRank memberRank) {
+		MemberRank currentMemberRank = member.getMemberRank();
+		if(currentMemberRank==null){
+			// 直接升级
+		}
+
+
 	}
 
 	public Member findByMobile(String mobile) {

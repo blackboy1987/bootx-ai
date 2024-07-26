@@ -2,11 +2,16 @@ package com.bootx.controller;
 
 import com.alipay.api.*;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
-import com.alipay.api.domain.Member;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.bootx.common.Result;
+import com.bootx.entity.Member;
+import com.bootx.entity.MemberRank;
 import com.bootx.security.CurrentUser;
+import com.bootx.service.MemberRankService;
+import com.bootx.service.MemberService;
+import com.bootx.service.impl.MemberRankServiceImpl;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -23,31 +28,42 @@ import java.io.File;
 @RequestMapping("/api/payment")
 public class PaymentController {
 
+    @Resource
+    private MemberRankService memberRankService;
+    @Resource
+    private MemberService memberService;
+
+
     @PostMapping("create")
-    public Result create(HttpServletRequest request, @CurrentUser Member member,Integer type) throws AlipayApiException {
+    public Result create(HttpServletRequest request, @CurrentUser Member member, Integer type, Long memberRankId) throws AlipayApiException {
+        MemberRank memberRank = memberRankService.find(memberRankId);
+        if(memberRank==null){
+            return Result.error("非法请求");
+        }
+
         String token = request.getHeader("token");
         String deviceId = request.getHeader("deviceId");
         String ip = request.getHeader("ip");
         if(StringUtils.isBlank(token) || StringUtils.isBlank(deviceId) || StringUtils.isBlank(ip)||type==null){
             return Result.error("非法请求");
         }
-        if(type == 1){
-            // 升级会员
-        }else{
-            return Result.error("非法请求");
-        }
-
-
-
-
         AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig());
         AlipayTradeAppPayRequest payRequest = new AlipayTradeAppPayRequest();
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-        model.setBody("我是测试数据");
-        model.setSubject("App支付测试Java");
+
+
+
+        if(type == 1){
+            // 升级会员
+            model.setBody("会员升级");
+            model.setSubject("会员升级："+memberRank.getName());
+            model.setTotalAmount("0.01");
+        }else{
+            return Result.error("非法请求");
+        }
         model.setOutTradeNo(System.currentTimeMillis() + "");
         model.setTimeoutExpress("30m");
-        model.setTotalAmount("0.01");
+
         model.setProductCode("QUICK_MSECURITY_PAY");
         payRequest.setBizModel(model);
         payRequest.setNotifyUrl("商户外网可以访问的异步地址");

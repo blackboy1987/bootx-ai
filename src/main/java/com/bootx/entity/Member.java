@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,6 +49,8 @@ public class Member extends User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private MemberRank memberRank;
+
+    private Date memberRankExpiredDate;
 
     /**
      * 获取用户名
@@ -112,5 +115,13 @@ public class Member extends User {
 
     public void setMemberRank(MemberRank memberRank) {
         this.memberRank = memberRank;
+    }
+
+    public Date getMemberRankExpiredDate() {
+        return memberRankExpiredDate;
+    }
+
+    public void setMemberRankExpiredDate(Date memberRankExpiredDate) {
+        this.memberRankExpiredDate = memberRankExpiredDate;
     }
 }
