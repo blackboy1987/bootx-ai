@@ -88,6 +88,7 @@ public class IndexController extends BaseController {
         data.put("username",member.getUsername());
         data.put("mobile",member.getMobile());
         data.put("isVip",!member.getMemberRank().getIsDefault());
+        data.put("expiredDate",member.getMemberRankExpiredDate());
         return Result.success(data);
     }
 
