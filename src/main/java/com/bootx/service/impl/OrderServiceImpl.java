@@ -28,7 +28,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Override
 	public Order create(Member member, MemberRank memberRank) {
 		Order order = new Order();
-		order.setAmount(new BigDecimal("0.01"));
+		order.setAmount(memberRank.getPrice());
 		order.setExpire(DateUtils.getNextMinute(30));
 		order.setMember(member);
 		order.setRewardPoint(0L);

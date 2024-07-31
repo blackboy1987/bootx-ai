@@ -34,7 +34,18 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 
 	@Override
 	public Member getCurrent() {
-		return super.find(1L);
+		HttpServletRequest request = WebUtils.getRequest();
+		if(request==null){
+			return null;
+		}
+		try {
+			String token = request.getHeader("token");
+			String id = JWTUtils.getId(token);
+            assert id != null;
+            return super.find(Long.valueOf(id));
+		}catch (Exception e){
+			return null;
+		}
 	}
 
 	@Override

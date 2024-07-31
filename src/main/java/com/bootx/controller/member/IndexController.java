@@ -9,6 +9,8 @@ import com.bootx.service.MemberService;
 import com.bootx.service.SmsLogService;
 import com.bootx.util.*;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -67,13 +69,13 @@ public class IndexController extends BaseController {
      * @return
      */
     @PostMapping(value = "/sendCode")
-    public Result sendCode(@RequestHeader String deviceId,@RequestHeader String ip,String mobile){
+    public Result sendCode(@RequestHeader String deviceId, String mobile, HttpServletRequest request){
         Member member = memberService.create(mobile, deviceId);
         if(member!=null && StringUtils.equalsAnyIgnoreCase(member.getMobile(),mobile)){
             String code = CodeUtils.getCode(6);
             String result = SmsUtils.send(mobile,code);
             redisService.set("login:"+mobile+":"+deviceId,code,10, TimeUnit.MINUTES);
-            smsLogService.create(member,deviceId,ip,result,code);
+            smsLogService.create(member,deviceId,IPUtils.getIpAddr(request),result,code);
             return Result.success();
         }
         return Result.error("信息校验失败");

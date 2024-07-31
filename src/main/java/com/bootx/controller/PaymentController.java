@@ -47,8 +47,7 @@ public class PaymentController {
         }
         String token = request.getHeader("token");
         String deviceId = request.getHeader("deviceId");
-        String ip = request.getHeader("ip");
-        if(StringUtils.isBlank(token) || StringUtils.isBlank(deviceId) || StringUtils.isBlank(ip)||type==null){
+        if(StringUtils.isBlank(token) || StringUtils.isBlank(deviceId)||type==null){
             return Result.error("非法请求");
         }
         // 这里要判断，当前会员拥有的会员等级是否高于需要升级的。如果高于，提示不支持升级
@@ -74,7 +73,6 @@ public class PaymentController {
         }else{
             return Result.error("非法请求");
         }
-
         payRequest.setBizModel(model);
         payRequest.setNotifyUrl("https://965z2991e.oicp.vip/api/payment/callback");
         try {

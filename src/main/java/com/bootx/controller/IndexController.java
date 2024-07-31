@@ -7,9 +7,12 @@ import com.bootx.entity.TextAppCategory;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.TextAppService;
 import com.bootx.service.impl.TextAppServiceImpl;
+import com.bootx.util.IPUtils;
 import com.bootx.util.caiji.xiaoyutai.XiaoyutaiUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.tomcat.util.net.IPv6Utils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +40,11 @@ public class IndexController extends BaseController {
      */
     @PostMapping("/check")
     private Result check(@CurrentUser Member member, HttpServletRequest request,String versionName){
-        return Result.success(1,"http://file.igomall.xin/aishangai_1.1.2.apk");
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select url from appversion where versionCode>? limit 1;",versionName);
+        if(maps.isEmpty()){
+            return Result.success();
+        }
+        return Result.success(1,maps.getFirst().get("url"));
     }
 
     @PostMapping("/adviser")
@@ -58,5 +65,4 @@ public class IndexController extends BaseController {
         List<Map<String, Object>> data = jdbcTemplate.queryForList("select id,name,isRecommend,memo,originalPrice,price,days from memberrank where isDefault=false order by originalPrice asc ;");
         return Result.success(data);
     }
-
 }
