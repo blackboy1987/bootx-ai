@@ -74,7 +74,7 @@ public class PaymentController {
             return Result.error("非法请求");
         }
         payRequest.setBizModel(model);
-        payRequest.setNotifyUrl("https://965z2991e.oicp.vip/api/payment/callback");
+        payRequest.setNotifyUrl("http://ai.igomall.xin/api/payment/callback");
         try {
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(payRequest);
             System.out.println(response.getBody());
@@ -94,9 +94,9 @@ public class PaymentController {
         certAlipayRequest.setFormat("json");
         certAlipayRequest.setCharset("UTF-8");
         certAlipayRequest.setSignType("RSA2");
-        certAlipayRequest.setCertPath(new File("D:/cert/appCertPublicKey_2021004156667072.crt").getAbsolutePath());
-        certAlipayRequest.setAlipayPublicCertPath(new File("D:/cert/alipayCertPublicKey_RSA2.crt").getAbsolutePath());
-        certAlipayRequest.setRootCertPath(new File("D:/cert/alipayRootCert.crt").getAbsolutePath());
+        certAlipayRequest.setCertPath(new File("/root/alipayfile/appCertPublicKey_2021004156667072.crt").getAbsolutePath());
+        certAlipayRequest.setAlipayPublicCertPath(new File("/root/alipayfile/alipayCertPublicKey_RSA2.crt").getAbsolutePath());
+        certAlipayRequest.setRootCertPath(new File("/root/alipayfile/alipayRootCert.crt").getAbsolutePath());
         return certAlipayRequest;
     }
 
