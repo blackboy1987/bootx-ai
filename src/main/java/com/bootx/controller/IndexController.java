@@ -37,7 +37,13 @@ public class IndexController extends BaseController {
      */
     @PostMapping("/check")
     private Result check(@CurrentUser Member member, HttpServletRequest request,String versionName){
-        return Result.success(1,"http://file.igomall.xin/aishangai_1.1.2.apk");
+        try {
+            String s = jdbcTemplate.queryForObject("select url from appversion where versionCode>? order by versionCode desc limit 1;", String.class, versionName);
+            return Result.success(1,s);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return Result.error("无更新");
     }
 
     @PostMapping("/adviser")

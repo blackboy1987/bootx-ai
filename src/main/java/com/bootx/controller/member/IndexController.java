@@ -4,11 +4,11 @@ import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
-import com.bootx.service.ImageTaskService;
 import com.bootx.service.MemberService;
 import com.bootx.service.SmsLogService;
 import com.bootx.util.*;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -62,12 +62,14 @@ public class IndexController extends BaseController {
 
     /**
      * 发送验证码
-     * @param deviceId
+     * @param request
      * @param mobile
      * @return
      */
     @PostMapping(value = "/sendCode")
-    public Result sendCode(@RequestHeader String deviceId,@RequestHeader String ip,String mobile){
+    public Result sendCode(HttpServletRequest request,String mobile){
+        String deviceId = request.getHeader("deviceId");
+        String ip = request.getHeader("ip");
         Member member = memberService.create(mobile, deviceId);
         if(member!=null && StringUtils.equalsAnyIgnoreCase(member.getMobile(),mobile)){
             String code = CodeUtils.getCode(6);
