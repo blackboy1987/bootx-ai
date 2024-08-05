@@ -1,9 +1,6 @@
 package com.bootx.controller;
 
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayClient;
-import com.alipay.api.CertAlipayRequest;
-import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.*;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
@@ -13,11 +10,13 @@ import com.bootx.entity.MemberRank;
 import com.bootx.entity.Order;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.MemberRankService;
+import com.bootx.service.MemberService;
 import com.bootx.service.OrderService;
+import com.bootx.service.impl.MemberRankServiceImpl;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Enumeration;
 
 /**
  * @author black
@@ -38,12 +38,6 @@ public class PaymentController {
     @Resource
     private OrderService orderService;
 
-    @Value("${certPath}")
-    private String certPath;
-    @Value("${alipayPublicCertPath}")
-    private String alipayPublicCertPath;
-    @Value("${rootCertPath}")
-    private String rootCertPath;
 
     @PostMapping("/create")
     public Result create(HttpServletRequest request, @CurrentUser Member member, Integer type, Long memberRankId) throws AlipayApiException {
@@ -53,8 +47,7 @@ public class PaymentController {
         }
         String token = request.getHeader("token");
         String deviceId = request.getHeader("deviceId");
-        String ip = request.getHeader("ip");
-        if(StringUtils.isBlank(token) || StringUtils.isBlank(deviceId) || StringUtils.isBlank(ip)||type==null){
+        if(StringUtils.isBlank(token) || StringUtils.isBlank(deviceId)||type==null){
             return Result.error("非法请求");
         }
         // 这里要判断，当前会员拥有的会员等级是否高于需要升级的。如果高于，提示不支持升级
@@ -80,9 +73,8 @@ public class PaymentController {
         }else{
             return Result.error("非法请求");
         }
-
         payRequest.setBizModel(model);
-        payRequest.setNotifyUrl("https://965z2991e.oicp.vip/api/payment/callback");
+        payRequest.setNotifyUrl("http://ai.igomall.xin/api/payment/callback");
         try {
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(payRequest);
             System.out.println(response.getBody());
@@ -102,14 +94,57 @@ public class PaymentController {
         certAlipayRequest.setFormat("json");
         certAlipayRequest.setCharset("UTF-8");
         certAlipayRequest.setSignType("RSA2");
-        certAlipayRequest.setCertPath(new File(certPath).getAbsolutePath());
-        certAlipayRequest.setAlipayPublicCertPath(new File(alipayPublicCertPath).getAbsolutePath());
-        certAlipayRequest.setRootCertPath(new File(rootCertPath).getAbsolutePath());
+        certAlipayRequest.setCertPath(new File("/root/alipayfile/appCertPublicKey_2021004156667072.crt").getAbsolutePath());
+        certAlipayRequest.setAlipayPublicCertPath(new File("/root/alipayfile/alipayCertPublicKey_RSA2.crt").getAbsolutePath());
+        certAlipayRequest.setRootCertPath(new File("/root/alipayfile/alipayRootCert.crt").getAbsolutePath());
         return certAlipayRequest;
     }
 
+    /**
+     * =========================start=========================================
+     * gmt_create:2024-07-26 09:29:48
+     * charset:UTF-8
+     * seller_email:1169794338@qq.com
+     * subject:会员升级：终身会员
+     * sign:nA5NxHsKE8uLAfwyYjz+SItp6OViyIJUkxna+zWxTQSsUi6+9v1eCe3s8DbuKNgdwfu7XeX2QACHu09bYZswHdcx0rJDcEcbdFChRuf05hB3HNXIGLgK1Imyn1TPv6KBYZYK1a9UzDinLZ177YKkDdY2XPAXXgG871jhekyZMnH909efDiE57EkWX/bzESmKry9BFG0NqmVuqJac2Hc+LtUFNbeuUKXOSt/cvyn0qUW6JDAo8yQAmAOxVkmpNWw43DDuoRUYWveRMqU3ky9s8zzQasGKe9l+mxpTDNnUUimh27FJE8+gGRj9IDLIHwxqIzWimDc5dhKVMaMarWQHdg==
+     * body:会员升级
+     * buyer_open_id:085MaAua7UaNHu9_R8n_UM5exKOBVVzSd2afxeWUgEzP6A7
+     * invoice_amount:0.01
+     * notify_id:2024072601222092950032851441399962
+     * fund_bill_list:[{"amount":"0.01","fundChannel":"ALIPAYACCOUNT"}]
+     * notify_type:trade_status_sync
+     * trade_status:TRADE_SUCCESS
+     * receipt_amount:0.01
+     * app_id:2021004156667072
+     * buyer_pay_amount:0.01
+     * sign_type:RSA2
+     * seller_id:2088402666505772
+     * gmt_payment:2024-07-26 09:29:49
+     * notify_time:2024-07-26 09:29:50
+     * merchant_app_id:2021004156667072
+     * version:1.0
+     * out_trade_no:1721957349555
+     * total_amount:0.01
+     * trade_no:2024072622001432851402069421
+     * auth_app_id:2021004156667072
+     * buyer_logon_id:bla***@163.com
+     * point_amount:0.00
+     * =========================end==========================================
+     * @param request
+     * @return
+     */
     @PostMapping("/callback")
     public String callback(HttpServletRequest request){
+        Enumeration<String> parameterNames = request.getParameterNames();
+        System.out.println("=========================start=========================================");
+        while (parameterNames.hasMoreElements()){
+            String key = parameterNames.nextElement();
+            String value = request.getParameter(key);
+            System.out.println(key+":"+value);
+        }
+        System.out.println("=========================end==========================================");
+
+
         Order order = orderService.findBySn(request.getParameter("out_trade_no"));
         if(order.getStatus()==0){
             String tradeStatus = request.getParameter("trade_status");

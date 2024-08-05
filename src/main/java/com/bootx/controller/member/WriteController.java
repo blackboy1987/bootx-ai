@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -54,6 +55,7 @@ public class WriteController extends BaseController {
             return Flux.empty();
         }
         return Flux.from(Objects.requireNonNull(AiUtils.message1(textAppTask.getPrompt()))).takeUntil(item-> {
+
             if(StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop")){
                 // 任务完成
                 textAppTask.setStatus(2);
@@ -61,6 +63,6 @@ public class WriteController extends BaseController {
                 return true;
             }
             return false;
-        });
+        }).delayElements(Duration.ofMillis(1000));
     }
 }

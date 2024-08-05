@@ -1,6 +1,7 @@
 package com.bootx.util;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -44,20 +45,13 @@ public final class JWTUtils {
         return null;
     }
 
-    public static String getKey(String token,String key){
+    public static String getId(String token){
         try {
             Claims claims = parseToken(token);
-            return claims.get(key).toString();
-        }catch (Exception ignored){
+            return claims.get("jti").toString();
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return null;
-    }
-
-
-    public static void main(String[] args) {
-        String s = create("123", new HashMap<>());
-        System.out.println(s);
-        Claims claims = parseToken(s);
-        System.out.println(claims.getId());
     }
 }
