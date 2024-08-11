@@ -1,118 +1,167 @@
 package com.bootx.util.ali;
 
+import com.bootx.util.JsonUtils;
 import com.bootx.util.WebUtils;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.collections.ArrayStack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ImageUtils {
 
     public static String token = "sk-48fb566bdf2d47b7be330ed85acfb883";
 
-    public static void create(Map<String,Object> parameters,String model){
+    public static void backgroundGeneration(Map<String,Object> parameters,String model){
         Map<String,String> headers = new HashMap<>();
         headers.put("X-DashScope-Async","enable");
         headers.put("Authorization","Bearer "+token);
         parameters.put("model",model);
-
-
-
         String url="https://dashscope.aliyuncs.com/api/v1/services/aigc/background-generation/generation/";
         String s = WebUtils.postBody(url, parameters, headers);
         System.out.println(s);
     }
 
-    public static String getTask(String taskId){
+    public static TaskResponse text2image(String prompt, String style, String size){
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("model","wanx-v1");
+
+        Map<String, Object> input = new HashMap<>();
+        input.put("prompt",prompt);
+        //input.put("negative_prompt","");
+        //input.put("ref_img","");
+        parameters.put("input",input);
+        /**
+         * 输出图像的风格，目前支持以下风格取值：
+         *
+         * "<photography>" 摄影,
+         * "<portrait>" 人像写真,
+         * "<3d cartoon>" 3D卡通,
+         * "<anime>" 动画,
+         * "<oil painting>" 油画,
+         * "<watercolor>"水彩,
+         * "<sketch>" 素描,
+         * "<chinese painting>" 中国画,
+         * "<flat illustration>" 扁平插画,
+         * "<auto>" 默认
+         */
+        parameters.put("style",style);
+        parameters.put("size",size);
+        parameters.put("n",1);
+        /**
+         * 图片生成时候的种子值，取值范围为(0, 4294967290) 。
+         * 如果不提供，则算法自动用一个随机生成的数字作为种子，
+         * 如果给定了，则根据 batch 数量分别生成 seed，seed+1，seed+2，seed+3为参数的图片。
+         */
+        parameters.put("seed",42);
+        /**
+         * 期望输出结果与垫图（参考图）的相似度，取值范围[0.0, 1.0]，数字越大，生成的结果与参考图越相似
+         */
+        parameters.put("ref_strength",0.5);
+        /**
+         * 垫图（参考图）生图使用的生成方式，
+         * 可选值为'repaint' （默认） 和 'refonly';
+         * 其中 repaint代表参考内容，refonly代表参考风格
+         */
+        parameters.put("ref_mode","repaint");
+        String s= AliCommonUtils.create("https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis",parameters);
+        TaskResponse output = JsonUtils.toObject(s, new TypeReference<TaskResponse>() {
+        });
+        System.out.println(s);
+        return output;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    public static TaskResponse.OutputDTO getTask(String taskId){
         Map<String,String> headers = new HashMap<>();
         headers.put("X-DashScope-Async","enable");
         headers.put("Authorization","Bearer "+token);
         String s = WebUtils.get("https://dashscope.aliyuncs.com/api/v1/tasks/" + taskId, headers, null);
-        return s;
+        TaskResponse task = JsonUtils.toObject(s, new TypeReference<TaskResponse>() {});
+        return task.getOutput();
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class TaskResponse{
 
+        @JsonProperty("request_id")
+        private String requestId;
+        private OutputDTO output = new OutputDTO();
 
-    public static void main(String[] args) {
-        Map<String,Object> params = new HashMap<>();
+        public String getRequestId() {
+            return requestId;
+        }
 
-        Map<String,Object> input = new HashMap<>();
-        /**
-         * 透明背景的主体图像URL。
-         * 需要为带透明背景的RGBA 四通道图像，支持png格式，
-         * 分辨率长边不超过2048像素。
-         * 输出图像的分辨率与该输入图相同
-         */
-        input.put("base_image_url","");
-        /**
-         * 引导图URL, 支持 jpg, png，webp等常见格式图像；
-         */
-        input.put("ref_image_url","");
-        /**
-         * 引导文本提示词，支持中英双语，不超过70个单词。
-         */
-        input.put("ref_prompt","");
-        /**
-         * 负向提示词，不希望出现的内容。
-         * 大部分情况下建议缺省该参数，这样会使用模型内置的默认值
-         */
-        input.put("neg_ref_prompt","");
+        public void setRequestId(String requestId) {
+            this.requestId = requestId;
+        }
 
-        Map<String,Object> reference_edge = new HashMap<>();
+        public OutputDTO getOutput() {
+            return output;
+        }
 
-        /**
-         * 前景元素，需要为带透明背景的RGBA 四通道图像，分辨率和主体图像相同，
-         * 如果不同则自动会resize到和主体图像同一个分辨率。
-         * 前景元素生成的图层在主体前面，可以对主体形成遮挡。
-         * 元素图像的生成方式参考边缘引导元素生成方法介绍
-         */
-        reference_edge.put("foreground_edge","");
-        /**
-         * 背景元素，生成图层在主体的后面，
-         * 如果重叠会被主体遮挡，其它提要求同前景元素
-         */
-        reference_edge.put("background_edge","");
-        input.put("reference_edge",reference_edge);
+        public void setOutput(OutputDTO output) {
+            this.output = output;
+        }
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class OutputDTO {
+            @JsonProperty("task_id")
+            private String taskId;
+            @JsonProperty("task_status")
+            private String taskStatus;
 
-        /**
-         * 图像上添加文字主标题。算法自动确定文字的大小和位置，限制1-8个字符
-         */
-        input.put("title","");
-        /**
-         * 图像上添加文字副标题。算法自动确定文字的大小和位置，限制1-10个字符。
-         * 仅当title不为空时生效
-         */
-        input.put("sub_title","");
-        params.put("input",input);
-        /**
-         * 生成图像数量，默认值1，取值范围[1,4]
-         */
-        params.put("n",4);
-        /**
-         * 当ref_image_url不为空时生效。
-         * 在图像引导的过程中添加随机变化，
-         * 数值越大与参考图相似度越低，
-         * 默认值300，取值范围[0,999]
-         */
-        params.put("noise_level","");
-        /**
-         * 仅当ref_image_url和ref_prompt同时输入时生效，
-         * 该参数设定文本和图像引导的权重。
-         * ref_prompt_weight表示文本的权重，
-         * 图像引导的权重为1-ref_prompt_weight。
-         * 默认值0.5，取值范围 [0,1]
-         */
-        params.put("ref_prompt_weight","");
+            private List<Image> results = new ArrayStack();
 
-        /**
-         * 使用场景，当前包含3种场景：
-         * GENERAL: 通用场景，默认值
-         * ROOM: 室内家居场景
-         * COSMETIC：美妆场景，也适用于大部分小商品摆放场景
-         */
-        params.put("scene_type","");
+            public String getTaskId() {
+                return taskId;
+            }
 
-        create(params,"stable-diffusion-xl-1024-v1-0");
+            public void setTaskId(String taskId) {
+                this.taskId = taskId;
+            }
 
+            public String getTaskStatus() {
+                return taskStatus;
+            }
+
+            public void setTaskStatus(String taskStatus) {
+                this.taskStatus = taskStatus;
+            }
+
+            public List<Image> getResults() {
+                return results;
+            }
+
+            public void setResults(List<Image> results) {
+                this.results = results;
+            }
+
+            @JsonIgnoreProperties(ignoreUnknown = true)
+            public static class Image {
+                private String url;
+
+                public String getUrl() {
+                    return url;
+                }
+
+                public void setUrl(String url) {
+                    this.url = url;
+                }
+            }
+
+        }
     }
-
 }

@@ -1,14 +1,12 @@
 package com.bootx.util;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public final class JWTUtils {
@@ -39,8 +37,7 @@ public final class JWTUtils {
         try {
             SecretKey key = Keys.hmacShaKeyFor(SECRETKEY.getBytes());
             return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
         return null;
     }
@@ -49,8 +46,7 @@ public final class JWTUtils {
         try {
             Claims claims = parseToken(token);
             return claims.get("jti").toString();
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (Exception ignored){
         }
         return null;
     }

@@ -3,7 +3,7 @@ package com.bootx.service.impl;
 import com.bootx.entity.ImageTask;
 import com.bootx.entity.Member;
 import com.bootx.service.ImageTaskService;
-import com.bootx.util.ali.TextToImageUtils;
+import com.bootx.util.ali.ImageUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class ImageTaskServiceImpl extends BaseServiceImpl<ImageTask,Long> implements ImageTaskService {
 
     @Override
-    public ImageTask create(Member member, TextToImageUtils.Output output) {
+    public ImageTask create(Member member, ImageUtils.TaskResponse output) {
         ImageTask imageTask = new ImageTask();
         imageTask.setMember(member);
         imageTask.setStatus(0);

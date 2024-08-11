@@ -90,8 +90,6 @@ public final class JsonUtils {
 		try {
 			return OBJECT_MAPPER.readValue(json, typeReference);
 		} catch (JsonParseException e) {
-			System.out.println(json);
-			System.out.println("===============================================");
 			throw new RuntimeException(e.getMessage(), e);
 		} catch (JsonMappingException e) {
 			throw new RuntimeException(e.getMessage(), e);

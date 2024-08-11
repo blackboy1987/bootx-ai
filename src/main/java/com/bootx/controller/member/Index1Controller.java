@@ -8,8 +8,6 @@ import com.bootx.service.ImageTaskService;
 import com.bootx.service.MemberService;
 import com.bootx.service.SmsLogService;
 import com.bootx.util.*;
-import com.bootx.util.ali.AliCommonUtils;
-import com.bootx.util.ali.TextToImageUtils;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -18,7 +16,6 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -75,31 +72,5 @@ public class Index1Controller extends BaseController {
         return Result.success(maps);
     }
 
-
-
-
-
-
-    @PostMapping(value = "/text2image")
-    public Result textToImage(@RequestHeader String deviceId,@CurrentUser Member member,String prompt,String style,String size){
-        if(StringUtils.isEmpty(prompt)){
-            return Result.error("请输入提示词");
-        }
-        if(StringUtils.isEmpty(style)){
-            return Result.error("请选择图片风格");
-        }
-        if(StringUtils.isEmpty(size)){
-            return Result.error("请选择图片大小");
-        }
-        // 写入任务
-        TextToImageUtils.Output output = TextToImageUtils.create(prompt, style, size);
-        imageTaskService.create(member,output);
-        return Result.success(output.getOutput().getTaskId());
-    }
-
-    @PostMapping(value = "/task")
-    public Result task(@CurrentUser Member member,String taskId){
-        return Result.success(AliCommonUtils.getTask(taskId));
-    }
 
 }

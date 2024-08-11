@@ -10,7 +10,6 @@ public class StyleListDTO {
     private String name;
     private String pic;
     private List<String> realPics = new ArrayList<>();
-    private String styleType;
 
     public String getCode() {
         return code;
@@ -42,14 +41,6 @@ public class StyleListDTO {
 
     public void setRealPics(List<String> realPics) {
         this.realPics = realPics;
-    }
-
-    public String getStyleType() {
-        return styleType;
-    }
-
-    public void setStyleType(String styleType) {
-        this.styleType = styleType;
     }
 
 }

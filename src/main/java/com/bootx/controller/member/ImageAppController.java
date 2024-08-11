@@ -2,13 +2,21 @@ package com.bootx.controller.member;
 
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
+import com.bootx.entity.Member;
 import com.bootx.pojo.imageapp.*;
+import com.bootx.security.CurrentUser;
+import com.bootx.service.ImageTaskService;
 import com.bootx.util.JsonUtils;
+import com.bootx.util.ali.ImageUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +27,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/member/imageApp")
 public class ImageAppController extends BaseController {
+
+    @Resource
+    private ImageTaskService imageTaskService;
 
     @PostMapping(value = "/config")
     public Result config() {
@@ -54,4 +65,27 @@ public class ImageAppController extends BaseController {
         return JsonUtils.toObject(str, new TypeReference<StyleTransferDTO>() {
         });
     }
+
+    @PostMapping(value = "/text2image")
+    public Result text2image(HttpServletRequest request, @CurrentUser Member member, String prompt, String style, String size) {
+        if(StringUtils.isEmpty(prompt)){
+            return Result.error("请输入提示词");
+        }
+        if(StringUtils.isEmpty(style)){
+            return Result.error("请选择图片风格");
+        }
+        if(StringUtils.isEmpty(size)){
+            return Result.error("请选择图片大小");
+        }
+        // 写入任务
+        ImageUtils.TaskResponse output = ImageUtils.text2image(prompt, style, size);
+        //imageTaskService.create(member,output);
+        return Result.success(output.getOutput().getTaskId());
+    }
+
+    @PostMapping(value = "/task")
+    public Result task(@CurrentUser Member member,String taskId){
+        return Result.success(ImageUtils.getTask(taskId));
+    }
+
 }

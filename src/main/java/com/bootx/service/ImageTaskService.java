@@ -2,7 +2,7 @@ package com.bootx.service;
 
 import com.bootx.entity.ImageTask;
 import com.bootx.entity.Member;
-import com.bootx.util.ali.TextToImageUtils;
+import com.bootx.util.ali.ImageUtils;
 
 /**
  * Entity-CategoryAppTaskService
@@ -11,5 +11,5 @@ import com.bootx.util.ali.TextToImageUtils;
  */
 public interface ImageTaskService extends BaseService<ImageTask,Long> {
 
-    ImageTask create(Member member, TextToImageUtils.Output output);
+    ImageTask create(Member member, ImageUtils.TaskResponse output);
 }

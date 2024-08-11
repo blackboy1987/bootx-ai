@@ -19,12 +19,4 @@ public class AliCommonUtils {
         String s = WebUtils.postBody(url, parameters, headers);
         return s;
     }
-
-    public static String getTask(String taskId) {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + TOKEN);
-        String s = WebUtils.get("https://dashscope.aliyuncs.com/api/v1/tasks/"+taskId, headers,null);
-        return s;
-    }
-
 }
