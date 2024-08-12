@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.awt.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author black
@@ -79,13 +76,19 @@ public class ImageAppController extends BaseController {
         }
         // 写入任务
         ImageUtils.TaskResponse output = ImageUtils.text2image(prompt, style, size);
+        System.out.println(output.getOutput().getTaskId());
         //imageTaskService.create(member,output);
         return Result.success(output.getOutput().getTaskId());
     }
 
+    /**
+     * 0cdaf149-dbb9-4a55-882f-b1ba76e6b9a5
+     * @param member
+     * @param taskId
+     * @return
+     */
     @PostMapping(value = "/task")
     public Result task(@CurrentUser Member member,String taskId){
         return Result.success(ImageUtils.getTask(taskId));
     }
-
 }
