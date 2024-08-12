@@ -17,7 +17,7 @@ public class ImageTask extends BaseEntity<Long>{
     private String taskId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false,unique = true)
+    @JoinColumn(nullable = false,updatable = false)
     private Member member;
 
     @Column(length = 4000)
