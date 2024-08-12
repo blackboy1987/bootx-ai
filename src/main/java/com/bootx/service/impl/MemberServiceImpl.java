@@ -14,6 +14,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Date;
@@ -120,6 +121,24 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		}
 
 
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public boolean usernameExists(String username) {
+		return memberDao.exists("username", StringUtils.lowerCase(username));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Member findByUsername(String username) {
+		return memberDao.find("username", StringUtils.lowerCase(username));
+	}
+
+
+	@Override
+	public boolean usernameUnique(Long id, String username) {
+		return memberDao.unique(id, "username", StringUtils.lowerCase(username));
 	}
 
 	public Member findByMobile(String mobile) {

@@ -26,7 +26,7 @@ public class Member extends User {
      * 用户名
      */
     @NotEmpty(groups = Save.class)
-    @Column(nullable = false, updatable = false,unique = true)
+    @Column(nullable = false,unique = true)
     @JsonView({PageView.class,ViewView.class})
     private String username;
 

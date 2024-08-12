@@ -104,4 +104,20 @@ public class IndexController extends BaseController {
         memberService.update(member);
         return Result.success();
     }
+
+
+    @PostMapping(value = "/updateUserInfo")
+    public Result updateUserInfo(@CurrentUser Member member,String username){
+        if(member==null){
+            return Result.error("未登录");
+        }
+        if(!memberService.usernameUnique(member.getId(),username)){
+            return Result.error("用户名已存在");
+        }
+        member.setUsername(username);
+        memberService.update(member);
+        return Result.success();
+    }
+
+
 }
