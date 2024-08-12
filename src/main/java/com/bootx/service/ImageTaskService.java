@@ -12,4 +12,6 @@ import com.bootx.util.ali.ImageUtils;
 public interface ImageTaskService extends BaseService<ImageTask,Long> {
 
     ImageTask create(Member member, ImageUtils.TaskResponse output);
+
+    ImageTask update(Member member, ImageTask imageTask);
 }

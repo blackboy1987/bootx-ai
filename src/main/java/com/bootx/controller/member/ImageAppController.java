@@ -77,7 +77,7 @@ public class ImageAppController extends BaseController {
         // 写入任务
         ImageUtils.TaskResponse output = ImageUtils.text2image(prompt, style, size);
         System.out.println(output.getOutput().getTaskId());
-        //imageTaskService.create(member,output);
+        imageTaskService.create(member,output);
         return Result.success(output.getOutput().getTaskId());
     }
 
