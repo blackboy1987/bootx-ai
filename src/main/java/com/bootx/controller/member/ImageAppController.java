@@ -2,6 +2,7 @@ package com.bootx.controller.member;
 
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
+import com.bootx.entity.ImageTask;
 import com.bootx.entity.Member;
 import com.bootx.pojo.imageapp.*;
 import com.bootx.security.CurrentUser;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author black
@@ -90,5 +94,28 @@ public class ImageAppController extends BaseController {
     @PostMapping(value = "/task")
     public Result task(@CurrentUser Member member,String taskId){
         return Result.success(ImageUtils.getTask(taskId));
+    }
+
+    @PostMapping(value = "/record")
+    public Result record(@CurrentUser Member member){
+        List<Map<String,Object>> data = new ArrayList<>();
+        List<ImageTask> all = imageTaskService.findAll();
+        for (ImageTask imageTask : all) {
+            String result = imageTask.getResult();
+            try {
+                List<Map<String,Object>> list = JsonUtils.toObject(result, new TypeReference<List<Map<String, Object>>>() {
+                });
+                if(!list.isEmpty()){
+                    Map<String,Object> item = new HashMap<>();
+                    item.put("taskId", imageTask.getTaskId());
+                    item.put("image",list.get(0).get("url"));
+                    data.add(item);
+                }
+            }catch (Exception ignored){
+            }
+        }
+
+
+        return Result.success(data);
     }
 }
