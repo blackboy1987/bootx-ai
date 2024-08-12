@@ -69,12 +69,20 @@ public class IndexController extends BaseController {
      * @return
      */
     @PostMapping(value = "/sendCode")
-    public Result sendCode(@RequestHeader String deviceId, String mobile, HttpServletRequest request){
+    public Result sendCode(@RequestHeader String deviceId, String mobile,Integer type, HttpServletRequest request){
+        if(type==null){
+            return Result.error("参数异常");
+        }
         Member member = memberService.create(mobile, deviceId);
         if(member!=null && StringUtils.equalsAnyIgnoreCase(member.getMobile(),mobile)){
             String code = CodeUtils.getCode(6);
             String result = SmsUtils.send(mobile,code);
-            redisService.set("login:"+mobile+":"+deviceId,code,10, TimeUnit.MINUTES);
+            if(type==0){
+                redisService.set("login:"+mobile+":"+deviceId,code,10, TimeUnit.MINUTES);
+            }else if(type==1){
+                redisService.set("updateMobile:"+mobile+":"+deviceId,code,10, TimeUnit.MINUTES);
+            }
+
             smsLogService.create(member,deviceId,IPUtils.getIpAddr(request),result,code);
             return Result.success();
         }
@@ -115,6 +123,24 @@ public class IndexController extends BaseController {
             return Result.error("用户名已存在");
         }
         member.setUsername(username);
+        memberService.update(member);
+        return Result.success();
+    }
+
+    @PostMapping(value = "/updateMobile")
+    public Result updateMobile(@CurrentUser Member member,String mobile,String code,HttpServletRequest request){
+        String deviceId = request.getHeader("deviceId");
+        if(member==null){
+            return Result.error("未登录");
+        }
+        String s = redisService.get("updateMobile:" + mobile + ":" + deviceId);
+        if(!StringUtils.equalsAnyIgnoreCase(s,code)){
+            return Result.error("验证码输入错误");
+        }
+        if(!memberService.mobileUnique(member.getId(),mobile)){
+            return Result.error("手机号已存在");
+        }
+        member.setMobile(mobile);
         memberService.update(member);
         return Result.success();
     }

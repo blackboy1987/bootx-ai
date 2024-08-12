@@ -152,4 +152,16 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 			return null;
 		}
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public boolean mobileExists(String mobile) {
+		return memberDao.exists("mobile", StringUtils.lowerCase(mobile));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public boolean mobileUnique(Long id, String mobile) {
+		return memberDao.unique(id, "mobile", StringUtils.lowerCase(mobile));
+	}
 }

@@ -58,4 +58,24 @@ public interface MemberService extends BaseService<Member, Long> {
 	 * @return username是否唯一
 	 */
 	boolean usernameUnique(Long id, String username);
+
+	/**
+	 * 判断手机是否存在
+	 *
+	 * @param mobile
+	 *            手机(忽略大小写)
+	 * @return 手机是否存在
+	 */
+	boolean mobileExists(String mobile);
+
+	/**
+	 * 判断手机是否唯一
+	 *
+	 * @param id
+	 *            ID
+	 * @param mobile
+	 *            手机(忽略大小写)
+	 * @return 手机是否唯一
+	 */
+	boolean mobileUnique(Long id, String mobile);
 }
