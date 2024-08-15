@@ -74,11 +74,49 @@ public class ImageUtils {
         return output;
     }
 
-
-
-
-
-
+    /**
+     * 人像风格重绘
+     * @param imageUrl
+     *      输入的图像 URL，
+     *      分辨率：可支持输入分辨率范围：不小于256*256，不超过5760*3240, 长宽比不超过1.5:1，若超出1.5:1将自适应裁剪到1.5:1
+     *      为确保生成质量，请上传脸部清晰照片，人脸比例不宜过小，并避免夸张姿势和表情
+     *      类型：JPEG，PNG，JPG，BMP，WEBP
+     *      大小：不超过10M
+     * @param styleIndex
+     *      想要生成的风格化类型索引：
+     *      -1 参考上传图像风格
+     *      0 复古漫画
+     *      1 3D童话
+     *      2 二次元
+     *      3 小清新
+     *      4 未来科技
+     *      5 国画古风
+     *      6 将军百战
+     *      7 炫彩卡通
+     *      8 清雅国风
+     *      9 喜迎新年
+     * @param styleRefUrl
+     *      当styleIndex=-1时，必须传入； 其他风格，无需传入
+     *      输入的图像 URL，
+     *      分辨率：可支持输入分辨率范围：不小于256*256，不超过5760*3240, 长宽比不超过2:1
+     *      类型：JPEG，PNG，JPG，BMP，WEBP
+     *      大小：不超过10M
+     * @return
+     */
+    public static TaskResponse repaint(String imageUrl, String styleIndex, String styleRefUrl){
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("model","wanx-style-repaint-v1");
+        Map<String, Object> input = new HashMap<>();
+        input.put("image_url",imageUrl);
+        input.put("style_index",styleIndex);
+        input.put("style_ref_url",styleRefUrl);
+        parameters.put("input",input);
+        String s= AliCommonUtils.create("https://dashscope.aliyuncs.com/api/v1/services/aigc/image-generation/generation",parameters);
+        TaskResponse output = JsonUtils.toObject(s, new TypeReference<TaskResponse>() {
+        });
+        System.out.println(s);
+        return output;
+    }
 
 
 
