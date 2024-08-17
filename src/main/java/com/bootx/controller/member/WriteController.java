@@ -54,7 +54,7 @@ public class WriteController extends BaseController {
         if(textAppTask==null||textAppTask.getStatus()!=1){
             return Flux.empty();
         }
-        return Flux.from(Objects.requireNonNull(AiUtils.message1(textAppTask.getPrompt()))).takeUntil(item-> {
+        return Flux.from(Objects.requireNonNull(AiUtils.message(textAppTask.getPrompt()))).takeUntil(item-> {
 
             if(StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop")){
                 // 任务完成

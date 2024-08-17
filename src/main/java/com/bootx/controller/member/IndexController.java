@@ -37,7 +37,7 @@ public class IndexController extends BaseController {
 
     @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> message(String content){
-        return Flux.from(Objects.requireNonNull(AiUtils.message1(content)));
+        return Flux.from(Objects.requireNonNull(AiUtils.message(content)));
     }
 
     /**

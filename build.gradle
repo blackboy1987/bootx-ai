@@ -44,7 +44,7 @@ dependencies {
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.17.0'
     implementation group: 'org.dom4j', name: 'dom4j', version: '2.1.4'
 
-    implementation("com.alibaba:dashscope-sdk-java:2.14.8"){
+    implementation("com.alibaba:dashscope-sdk-java:2.16.2"){
         exclude(group:'org.slf4j',module:"slf4j-simple")
     }
 

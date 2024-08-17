@@ -1,6 +1,7 @@
 package com.bootx.controller;
 
 import com.bootx.common.Result;
+import com.bootx.entity.AdLog;
 import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.TextAppService;
@@ -65,5 +66,10 @@ public class IndexController extends BaseController {
     private Result memberRank(HttpServletRequest request){
         List<Map<String, Object>> data = jdbcTemplate.queryForList("select id,name,isRecommend,memo,originalPrice,price,days from memberrank where isDefault=false order by originalPrice asc ;");
         return Result.success(data);
+    }
+
+    @PostMapping("/adLog")
+    private Result adLog(AdLog adLog,@CurrentUser Member member){
+        return Result.success();
     }
 }

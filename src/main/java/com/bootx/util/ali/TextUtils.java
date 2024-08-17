@@ -28,45 +28,6 @@ public class TextUtils {
     static {
         Constants.apiKey = "sk-48fb566bdf2d47b7be330ed85acfb883";
     }
-    public static void streamCallWithCallback(String content, Consumer<MessagePojo> onEvent, Consumer<String> onError, Consumer<Integer> onComplete){
-        System.out.println(content);
-        Generation gen = new Generation();
-        Message userMsg = Message.builder().role(Role.USER.getValue()).content(content).build();
-        GenerationParam param = GenerationParam.builder()
-                .model("qwen-plus")
-                .resultFormat(GenerationParam.ResultFormat.MESSAGE)
-                .messages(Collections.singletonList(userMsg))
-                .topP(0.8)
-                .incrementalOutput(true)
-                .build();
-        Semaphore semaphore = new Semaphore(0);
-        try {
-            gen.streamCall(param, new ResultCallback<GenerationResult>() {
-                @Override
-                public void onEvent(GenerationResult message) {
-                    MessagePojo messagePojo = new MessagePojo();
-                    messagePojo.init(message);
-                    onEvent.accept(messagePojo);
-                }
-
-                @Override
-                public void onError(Exception err) {
-                    semaphore.release();
-                    System.out.println(err.getMessage());
-                    onError.accept(err.getMessage());
-                }
-
-                @Override
-                public void onComplete() {
-                    semaphore.release();
-                    onComplete.accept(0);
-                }
-            });
-            semaphore.acquire();
-        } catch (NoApiKeyException | InputRequiredException | InterruptedException e) {
-            onError.accept(e.getMessage());
-        }
-    }
 
     private static GenerationParam buildGenerationParam(Message userMsg) {
         return GenerationParam.builder()
