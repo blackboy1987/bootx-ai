@@ -4,6 +4,7 @@ import com.bootx.common.Result;
 import com.bootx.entity.AdLog;
 import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
+import com.bootx.service.AdLogService;
 import com.bootx.service.TextAppService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +26,7 @@ import java.util.Map;
 public class IndexController extends BaseController {
 
     @Resource
-    private TextAppService textAppService;
+    private AdLogService adLogService;
     /**
      * 检测是否需要升级
      * @param member
@@ -70,6 +71,8 @@ public class IndexController extends BaseController {
 
     @PostMapping("/adLog")
     private Result adLog(AdLog adLog,@CurrentUser Member member){
+        adLog.setMember(member);
+        adLogService.save(adLog);
         return Result.success();
     }
 }
