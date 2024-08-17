@@ -41,6 +41,9 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		}
 		try {
 			String token = request.getHeader("token");
+			if(StringUtils.isBlank(token)){
+				token = request.getParameter("token");
+			}
 			String id = JWTUtils.getId(token);
             assert id != null;
             return super.find(Long.valueOf(id));

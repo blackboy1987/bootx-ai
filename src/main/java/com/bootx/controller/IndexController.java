@@ -6,6 +6,7 @@ import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.AdLogService;
 import com.bootx.service.TextAppService;
+import com.bootx.util.IPUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,8 +71,9 @@ public class IndexController extends BaseController {
     }
 
     @PostMapping("/adLog")
-    private Result adLog(AdLog adLog,@CurrentUser Member member){
+    private Result adLog(AdLog adLog,@CurrentUser Member member,HttpServletRequest request){
         adLog.setMember(member);
+        adLog.setIp(IPUtils.getIpAddr(request));
         adLogService.save(adLog);
         return Result.success();
     }

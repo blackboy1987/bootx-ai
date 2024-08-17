@@ -15,17 +15,9 @@ public class AdLog extends BaseEntity<Long> {
      */
     private String adId;
 
-    /**
-     *  mediaId
-     */
-    private String mediaId;
-
-    /**
-     *开屏广告
-     */
     private String adType;
 
-    private String adStatus;
+    private String status;
 
     private String requestId;
 
@@ -34,20 +26,14 @@ public class AdLog extends BaseEntity<Long> {
 
     private String ip;
 
+    private String deviceId;
+
     public String getAdId() {
         return adId;
     }
 
     public void setAdId(String adId) {
         this.adId = adId;
-    }
-
-    public String getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(String mediaId) {
-        this.mediaId = mediaId;
     }
 
     public String getAdType() {
@@ -58,12 +44,12 @@ public class AdLog extends BaseEntity<Long> {
         this.adType = adType;
     }
 
-    public String getAdStatus() {
-        return adStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setAdStatus(String adStatus) {
-        this.adStatus = adStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getRequestId() {
@@ -88,5 +74,13 @@ public class AdLog extends BaseEntity<Long> {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 }
