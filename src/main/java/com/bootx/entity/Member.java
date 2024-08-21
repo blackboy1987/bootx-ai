@@ -124,4 +124,12 @@ public class Member extends User {
     public void setMemberRankExpiredDate(Date memberRankExpiredDate) {
         this.memberRankExpiredDate = memberRankExpiredDate;
     }
+
+
+    @JsonView(BaseView.class)
+    @Transient
+    public boolean hasExpired() {
+        return getMemberRankExpiredDate() != null && !getMemberRankExpiredDate().after(new Date());
+    }
+
 }
