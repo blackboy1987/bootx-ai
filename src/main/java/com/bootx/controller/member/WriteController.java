@@ -65,4 +65,9 @@ public class WriteController extends BaseController {
             return false;
         }).delayElements(Duration.ofMillis(1000));
     }
+
+    @GetMapping(value = "/msg",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<MessagePojo> msg(String content){
+        return Flux.from(Objects.requireNonNull(AiUtils.message(content))).takeUntil(item-> StringUtils.equalsIgnoreCase(item.getFinishReason(), "stop")).delayElements(Duration.ofMillis(1000));
+    }
 }

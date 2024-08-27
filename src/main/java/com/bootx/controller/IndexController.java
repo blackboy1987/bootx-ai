@@ -54,7 +54,7 @@ public class IndexController extends BaseController {
         Map<String,Object> data = new HashMap<>();
         data.put("umengAndroid","6665a83ccac2a664de45b89b");
         data.put("umengIos","6665a86a940d5a4c4967f66f");
-        data.put("umengName","测试");
+        data.put("umengName","flutter_demo=flutter_ios");
         // 广告配置
         try {
             data.put("adConfig",jdbcTemplate.queryForMap("select adId,bannerId,dynamicExpressAdId,fullScreenVideoAdId,interactionAdId,mediaId,rewardVideoAdId,splashAdId from adconfig where isOpen=true order by id desc limit 1;"));
