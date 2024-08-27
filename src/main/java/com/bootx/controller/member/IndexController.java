@@ -3,6 +3,7 @@ package com.bootx.controller.member;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
+import com.bootx.entity.MemberRank;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.ImageTaskService;
 import com.bootx.service.MemberService;
@@ -142,6 +143,25 @@ public class IndexController extends BaseController {
         }
         member.setMobile(mobile);
         memberService.update(member);
+        return Result.success();
+    }
+
+    @PostMapping(value = "/reward")
+    public Result reward(@CurrentUser Member member,String mobile,String code,HttpServletRequest request){
+        String deviceId = request.getHeader("deviceId");
+        if(member==null){
+            return Result.error("未登录");
+        }
+        MemberRank memberRank = member.getMemberRank();
+        if(memberRank!=null){
+            if(member.hasExpired()){
+                member.setMemberRankExpiredDate(DateUtils.getNextDay(1));
+            }else{
+                member.setMemberRankExpiredDate(DateUtils.getNextDay(member.getMemberRankExpiredDate(),1));
+            }
+            memberService.update(member);
+        }
+
         return Result.success();
     }
 
