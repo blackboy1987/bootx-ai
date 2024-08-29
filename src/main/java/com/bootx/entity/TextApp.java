@@ -4,6 +4,7 @@ import com.bootx.common.BaseAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,9 @@ public class TextApp extends OrderedEntity<Long>{
     @NotNull
     @Column(nullable = false)
     private Integer type;
+
+    @Comment("是否推荐。true：是，false：否")
+    private Boolean isRecommend;
 
 
     public String getName() {
@@ -108,6 +112,14 @@ public class TextApp extends OrderedEntity<Long>{
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Boolean getIsRecommend() {
+        return isRecommend;
+    }
+
+    public void setIsRecommend(Boolean isRecommend) {
+        this.isRecommend = isRecommend;
     }
 
     @Convert
