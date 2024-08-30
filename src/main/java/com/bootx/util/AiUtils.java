@@ -20,9 +20,10 @@ import java.util.Collections;
 public class AiUtils {
     public static String token = "sk-48fb566bdf2d47b7be330ed85acfb883";
 
-    private static GenerationParam buildGenerationParam(Message userMsg) {
+    private static GenerationParam buildGenerationParam(Message userMsg,String prompt) {
         return GenerationParam.builder()
                 .model("qwen-turbo")
+                .prompt(prompt)
                 .messages(Collections.singletonList(userMsg))
                 .resultFormat(GenerationParam.ResultFormat.MESSAGE)
                 .topP(0.8)
@@ -30,21 +31,21 @@ public class AiUtils {
                 .build();
     }
 
-    public static Flowable<MessagePojo> message(String content) {
+    public static Flowable<MessagePojo> message(String content,String prompt) {
         Constants.apiKey = token;
         try {
             Generation gen = new Generation();
             Message userMsg = Message.builder().role(Role.USER.getValue()).content(content).build();
-            return streamCallWithMessage(gen,userMsg);
+            return streamCallWithMessage(gen,userMsg,prompt);
         } catch (ApiException | NoApiKeyException | InputRequiredException e) {
             e.printStackTrace();
         }
         return Flowable.just(MessagePojo.empty());
     }
 
-    public static Flowable<MessagePojo> streamCallWithMessage(Generation gen, Message userMsg)
+    public static Flowable<MessagePojo> streamCallWithMessage(Generation gen, Message userMsg,String prompt)
             throws NoApiKeyException, ApiException, InputRequiredException {
-        GenerationParam param = buildGenerationParam(userMsg);
+        GenerationParam param = buildGenerationParam(userMsg,prompt);
         Flowable<GenerationResult> result = gen.streamCall(param);
         return result.map(message->{
             System.out.println(JsonUtils.toJson(message));

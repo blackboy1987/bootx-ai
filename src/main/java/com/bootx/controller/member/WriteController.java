@@ -54,8 +54,7 @@ public class WriteController extends BaseController {
         if(textAppTask==null||textAppTask.getStatus()!=1){
             return Flux.empty();
         }
-        return Flux.from(Objects.requireNonNull(AiUtils.message(textAppTask.getPrompt()))).takeUntil(item-> {
-
+        return Flux.from(Objects.requireNonNull(AiUtils.message(textAppTask.getPrompt(),textAppTask.getTextApp().getUserPrompt()))).takeUntil(item-> {
             if(StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop")){
                 // 任务完成
                 textAppTask.setStatus(2);
@@ -68,6 +67,6 @@ public class WriteController extends BaseController {
 
     @GetMapping(value = "/msg",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> msg(String content){
-        return Flux.from(Objects.requireNonNull(AiUtils.message(content))).takeUntil(item-> StringUtils.equalsIgnoreCase(item.getFinishReason(), "stop")).delayElements(Duration.ofMillis(1000));
+        return Flux.from(Objects.requireNonNull(AiUtils.message(content,""))).takeUntil(item-> StringUtils.equalsIgnoreCase(item.getFinishReason(), "stop")).delayElements(Duration.ofMillis(10));
     }
 }
