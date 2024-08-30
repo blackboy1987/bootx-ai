@@ -61,6 +61,7 @@ public class IndexController extends BaseController {
         }catch (Exception e){
             data.put("adConfig", Collections.emptyMap());
         }
+        data.put("hotSearchList",jdbcTemplate.queryForList("select title from hotsearch",String.class));
         return data;
     }
 
