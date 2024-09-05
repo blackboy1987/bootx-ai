@@ -49,7 +49,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @PostMapping(value = "/login")
-    public Result login(@RequestHeader String deviceId, String mobile, String code){
+    public Result login(String deviceId, String mobile, String code){
         Member member = memberService.findByMobile(mobile);
         String s = redisService.get("login:" + mobile + ":" + deviceId);
         if(!StringUtils.equalsAnyIgnoreCase(s,code)){
@@ -70,7 +70,7 @@ public class IndexController extends BaseController {
      * @return
      */
     @PostMapping(value = "/sendCode")
-    public Result sendCode(@RequestHeader String deviceId, String mobile,Integer type, HttpServletRequest request){
+    public Result sendCode(String deviceId, String mobile,Integer type, HttpServletRequest request){
         if(type==null){
             return Result.error("参数异常");
         }

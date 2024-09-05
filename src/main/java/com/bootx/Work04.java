@@ -11,7 +11,7 @@ public class Work04 {
     static int count = 0;	// 初始化统计变量
     
     public static void main(String[] args) throws IOException {
-        File file = new File("C:\\Users\\blackboy1987\\StudioProjects\\ai_app\\app\\src\\main\\java\\com\\bootx\\ai");	// 需要查找的文件目录
+        File file = new File("C:\\Users\\black\\AndroidStudioProjects\\ai_app\\app\\src\\main\\java\\com\\bootx\\ai");	// 需要查找的文件目录
         List<File> files =  new ArrayList<>();
         getTxtFilesCount(file,files);
         countLines(files);
