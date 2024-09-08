@@ -1,5 +1,6 @@
 package com.bootx.controller.member;
 
+import com.bootx.common.Pageable;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
@@ -37,10 +38,10 @@ public class OrderController extends BaseController {
     private OrderService orderService;
 
     @PostMapping(value = "/list")
-    public Result list(@CurrentUser Member member, HttpServletRequest request) {
+    public Result list(@CurrentUser Member member, HttpServletRequest request, Pageable pageable) {
         if(member==null){
             return Result.success(Collections.emptyList());
         }
-        return Result.success(jdbcTemplate.queryForList("select sn,createdDate,amount,memo,type from orders where status=2 and member_id=? order by createdDate desc ",member.getId()));
+        return Result.success(jdbcTemplate.queryForList("select sn,createdDate,amount,memo,type from orders where status=2 and member_id=? order by createdDate desc limit ?,?",member.getId(),(pageable.getPageNumber()-1)*pageable.getPageSize(),pageable.getPageSize()));
     }
 }

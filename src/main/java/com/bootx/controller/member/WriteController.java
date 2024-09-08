@@ -48,7 +48,7 @@ public class WriteController extends BaseController {
         return Result.success(textAppTask.getTaskId());
     }
 
-    @GetMapping(value = "/load",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/load",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> load(String taskId){
         TextAppTask textAppTask = textAppTaskService.findByTaskId(taskId);
         if(textAppTask==null||textAppTask.getStatus()!=1){
@@ -62,7 +62,7 @@ public class WriteController extends BaseController {
                 return true;
             }
             return false;
-        }).delayElements(Duration.ofMillis(1000));
+        }).delayElements(Duration.ofMillis(10));
     }
 
     @GetMapping(value = "/msg",produces = MediaType.TEXT_EVENT_STREAM_VALUE)

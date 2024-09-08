@@ -37,8 +37,6 @@ public class CouponCodeController extends BaseController {
 		}
 		member.setMemberRankExpiredDate(DateUtils.getNextDay(member.getMemberRankExpiredDate(),100));
 		memberService.update(member);
-
-
 		return Result.success();
 	}
 

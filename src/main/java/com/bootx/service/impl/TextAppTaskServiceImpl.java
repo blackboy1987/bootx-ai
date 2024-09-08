@@ -38,13 +38,9 @@ public class TextAppTaskServiceImpl extends BaseServiceImpl<TextAppTask,Long> im
         Map<String, Object> map = JsonUtils.toObject(textAppTask.getParams(), new TypeReference<Map<String, Object>>() {
         });
         String prompt = textApp.getUserPrompt();
-        System.out.println(params);
-        System.out.println(prompt);
         for (String key : map.keySet()) {
             prompt = prompt.replace("{" + key + "}", map.get(key).toString());
         }
-        System.out.println(prompt);
-
         textAppTask.setPrompt(prompt);
         textAppTask.setTaskId(DateUtils.formatDateToString(new Date(), "yyyyMMddHHmmssSSS") + member.getId());
         return super.save(textAppTask);

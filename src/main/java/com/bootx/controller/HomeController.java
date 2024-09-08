@@ -35,7 +35,11 @@ public class HomeController extends BaseController {
         try {
             list = JsonUtils.toObject(s, new TypeReference<List<Map<String, Object>>>() {
             });
-            map.put("list",list);
+            if(list.isEmpty()){
+                list = jdbcTemplate.queryForList("select name,icon,id from textapp where icon is not null and isRecommend=true and type=0 limit 15;");
+                redisService.set("home_index",JsonUtils.toJson(list),1, TimeUnit.DAYS);
+                map.put("list",list);
+            }
         }catch (Exception e){
             list = jdbcTemplate.queryForList("select name,icon,id from textapp where icon is not null and isRecommend=true and type=0 limit 15;");
             redisService.set("home_index",JsonUtils.toJson(list),1, TimeUnit.DAYS);

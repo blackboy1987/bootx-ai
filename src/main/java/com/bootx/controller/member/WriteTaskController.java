@@ -1,5 +1,6 @@
 package com.bootx.controller.member;
 
+import com.bootx.common.Pageable;
 import com.bootx.common.Result;
 import com.bootx.controller.BaseController;
 import com.bootx.entity.Member;
@@ -41,9 +42,17 @@ public class WriteTaskController extends BaseController {
         }
         return Result.success();
     }
+
+    /**
+     * 历史记录
+     * @param member
+     * @param textAppId
+     * @param request
+     * @return
+     */
     @PostMapping(value = "/list")
-    public Result list(@CurrentUser Member member, Long textAppId, HttpServletRequest request) {
-        List<Map<String, Object>> list = jdbcTemplate.queryForList("select id,DATE_FORMAT(createdDate,'%Y-%m-%d %H:%i') createdDate,concat(LEFT(result,10),'...') title from textapptask where result is not null and result !='' order by createdDate desc ");
+    public Result list(@CurrentUser Member member, Long textAppId, HttpServletRequest request, Pageable pageable) {
+        List<Map<String, Object>> list = jdbcTemplate.queryForList("select id,DATE_FORMAT(createdDate,'%Y-%m-%d %H:%i') createdDate,concat(LEFT(result,10),'...') title from textapptask where 1=1 order by createdDate desc limit ?,?",(pageable.getPageNumber()-1)*pageable.getPageSize(),pageable.getPageSize());
         return Result.success(list);
     }
     @PostMapping(value = "/view")

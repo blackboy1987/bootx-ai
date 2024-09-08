@@ -24,11 +24,18 @@ public class TextAppController extends BaseController {
 
     @PostMapping("/category")
     private Result category(){
-        String s = redisService.get("category2");
+        String s = redisService.get("category");
         List<Map<String, Object>> maps = new ArrayList<>();
         try {
             maps = JsonUtils.toObject(s, new TypeReference<List<Map<String, Object>>>() {
             });
+            if(maps.isEmpty()){
+                maps = jdbcTemplate.queryForList("select id,name from textappcategory");
+                for (Map<String, Object> map : maps) {
+                    map.put("list",jdbcTemplate.queryForList("select id,name,memo from textapp where textAppCategory_id=?",map.get("id")));
+                }
+                redisService.set("category",JsonUtils.toJson(maps),30, TimeUnit.MINUTES);
+            }
         }catch (Exception e){
             maps = jdbcTemplate.queryForList("select id,name from textappcategory");
             for (Map<String, Object> map : maps) {

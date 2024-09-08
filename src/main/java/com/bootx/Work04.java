@@ -11,7 +11,7 @@ public class Work04 {
     static int count = 0;	// 初始化统计变量
     
     public static void main(String[] args) throws IOException {
-        File file = new File("C:\\Users\\black\\AndroidStudioProjects\\ai_app\\app\\src\\main\\java\\com\\bootx\\ai");	// 需要查找的文件目录
+        File file = new File("C:\\Users\\blackboy1987\\StudioProjects\\ai_flutter1\\lib");	// 需要查找的文件目录
         List<File> files =  new ArrayList<>();
         getTxtFilesCount(file,files);
         countLines(files);
@@ -53,7 +53,7 @@ public class Work04 {
                 getTxtFilesCount(f,list);
             }else {
                 // 判断文件是不是以.txt结尾的文件，并且count++（注意：文件要显示扩展名）
-                if (f.getName().endsWith(".kt")) {
+                if (f.getName().endsWith(".dart")) {
                     list.add(f);
                     count++;
                 }

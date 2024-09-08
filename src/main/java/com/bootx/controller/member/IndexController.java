@@ -36,7 +36,7 @@ public class IndexController extends BaseController {
     @Resource
     private SmsLogService smsLogService;
 
-    @GetMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<MessagePojo> message(String content){
         return Flux.from(Objects.requireNonNull(AiUtils.message(content,"")));
     }
@@ -99,7 +99,7 @@ public class IndexController extends BaseController {
         data.put("username",member.getUsername());
         data.put("mobile",member.getMobile());
         data.put("isVip",!member.getMemberRank().getIsDefault());
-        data.put("expiredDate",member.getMemberRankExpiredDate());
+        data.put("expiredDate",DateUtils.formatDateToString(member.getMemberRankExpiredDate(),"yyyy-MM-dd"));
         return Result.success(data);
     }
 
