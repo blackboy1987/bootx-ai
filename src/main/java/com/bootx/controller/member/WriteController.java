@@ -9,11 +9,16 @@ import com.bootx.service.MemberService;
 import com.bootx.service.TextAppService;
 import com.bootx.service.TextAppTaskService;
 import com.bootx.util.AiUtils;
+import com.bootx.util.JsonUtils;
 import com.bootx.util.MessagePojo;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
@@ -49,13 +54,15 @@ public class WriteController extends BaseController {
     }
 
     @PostMapping(value = "/load",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<MessagePojo> load(String taskId){
+    public Flux<String> load(String taskId){
         TextAppTask textAppTask = textAppTaskService.findByTaskId(taskId);
         if(textAppTask==null||textAppTask.getStatus()!=1){
             return Flux.empty();
         }
         return Flux.from(Objects.requireNonNull(AiUtils.message(textAppTask.getPrompt(),textAppTask.getTextApp().getUserPrompt()))).takeUntil(item-> {
-            if(StringUtils.equalsIgnoreCase(item.getFinishReason(),"stop")){
+            MessagePojo messagePojo = JsonUtils.toObject(item, new TypeReference<MessagePojo>() {
+            });
+            if(StringUtils.equalsIgnoreCase(messagePojo.getFinishReason(),"stop")){
                 // 任务完成
                 textAppTask.setStatus(2);
                 textAppTaskService.update(textAppTask);
@@ -66,7 +73,11 @@ public class WriteController extends BaseController {
     }
 
     @GetMapping(value = "/msg",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<MessagePojo> msg(String content){
-        return Flux.from(Objects.requireNonNull(AiUtils.message(content,""))).takeUntil(item-> StringUtils.equalsIgnoreCase(item.getFinishReason(), "stop")).delayElements(Duration.ofMillis(10));
+    public Flux<String> msg(String content){
+        return Flux.from(Objects.requireNonNull(AiUtils.message(content,""))).takeUntil(item-> {
+            MessagePojo messagePojo = JsonUtils.toObject(item, new TypeReference<MessagePojo>() {
+            });
+            return StringUtils.equalsIgnoreCase(messagePojo.getFinishReason(), "stop");
+        }).delayElements(Duration.ofMillis(10));
     }
 }
