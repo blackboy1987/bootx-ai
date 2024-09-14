@@ -52,7 +52,9 @@ public class WriteTaskController extends BaseController {
      */
     @PostMapping(value = "/list")
     public Result list(@CurrentUser Member member, Long textAppId, HttpServletRequest request, Pageable pageable) {
+        System.out.println(pageable.getPageNumber());
         List<Map<String, Object>> list = jdbcTemplate.queryForList("select id,DATE_FORMAT(createdDate,'%Y-%m-%d %H:%i') createdDate,concat(LEFT(result,10),'...') title from textapptask where 1=1 order by createdDate desc limit ?,?",(pageable.getPageNumber()-1)*pageable.getPageSize(),pageable.getPageSize());
+        System.out.println(list.size());
         return Result.success(list);
     }
     @PostMapping(value = "/view")

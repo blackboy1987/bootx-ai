@@ -62,7 +62,7 @@ public class WriteController extends BaseController {
                 return true;
             }
             return false;
-        }).delayElements(Duration.ofMillis(10));
+        }).delayElements(Duration.ofMillis(0));
     }
 
     @GetMapping(value = "/msg",produces = MediaType.TEXT_EVENT_STREAM_VALUE)

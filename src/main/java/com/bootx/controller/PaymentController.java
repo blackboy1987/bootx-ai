@@ -1,6 +1,9 @@
 package com.bootx.controller;
 
-import com.alipay.api.*;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.CertAlipayRequest;
+import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
@@ -12,11 +15,10 @@ import com.bootx.security.CurrentUser;
 import com.bootx.service.MemberRankService;
 import com.bootx.service.MemberService;
 import com.bootx.service.OrderService;
-import com.bootx.service.impl.MemberRankServiceImpl;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,14 +40,26 @@ public class PaymentController {
     @Resource
     private OrderService orderService;
 
+    @Value("${certPath}")
+    private String certPath;
+    @Value("${alipayPublicCertPath}")
+    private String alipayPublicCertPath;
+    @Value("${rootCertPath}")
+    private String rootCertPath;
+    @Resource
+    private MemberService memberService;
+
 
     @PostMapping("/create")
     public Result create(HttpServletRequest request, @CurrentUser Member member, Integer type, Long memberRankId) throws AlipayApiException {
+        type=1;
+        memberRankId=1L;
+        member = memberService.find(1L);
         MemberRank memberRank = memberRankService.find(memberRankId);
         if(memberRank==null){
             return Result.error("非法请求");
         }
-        String token = request.getHeader("token");
+        /*String token = request.getHeader("token");
         String deviceId = request.getHeader("deviceId");
         if(StringUtils.isBlank(token) || StringUtils.isBlank(deviceId)||type==null){
             return Result.error("非法请求");
@@ -53,7 +67,7 @@ public class PaymentController {
         // 这里要判断，当前会员拥有的会员等级是否高于需要升级的。如果高于，提示不支持升级
         if(member.getMemberRank()!=null && member.getMemberRank().getPrice().compareTo(memberRank.getPrice())>0){
             return Result.error("当前会员等级高于"+memberRank.getName()+",暂不支持升级");
-        }
+        }*/
 
 
 
@@ -94,9 +108,9 @@ public class PaymentController {
         certAlipayRequest.setFormat("json");
         certAlipayRequest.setCharset("UTF-8");
         certAlipayRequest.setSignType("RSA2");
-        certAlipayRequest.setCertPath(new File("/root/alipayfile/appCertPublicKey_2021004156667072.crt").getAbsolutePath());
-        certAlipayRequest.setAlipayPublicCertPath(new File("/root/alipayfile/alipayCertPublicKey_RSA2.crt").getAbsolutePath());
-        certAlipayRequest.setRootCertPath(new File("/root/alipayfile/alipayRootCert.crt").getAbsolutePath());
+        certAlipayRequest.setCertPath(new File(certPath).getAbsolutePath());
+        certAlipayRequest.setAlipayPublicCertPath(new File(alipayPublicCertPath).getAbsolutePath());
+        certAlipayRequest.setRootCertPath(new File(rootCertPath).getAbsolutePath());
         return certAlipayRequest;
     }
 
