@@ -31,7 +31,7 @@ public class AiUtils {
                 .build();
     }
 
-    public static Flowable<MessagePojo> message(String content,String prompt) {
+    public static Flowable<String> message(String content,String prompt) {
         Constants.apiKey = token;
         try {
             Generation gen = new Generation();
@@ -40,10 +40,10 @@ public class AiUtils {
         } catch (ApiException | NoApiKeyException | InputRequiredException e) {
             e.printStackTrace();
         }
-        return Flowable.just(MessagePojo.empty());
+        return Flowable.just(com.bootx.util.JsonUtils.toJson(Collections.emptyList()));
     }
 
-    public static Flowable<MessagePojo> streamCallWithMessage(Generation gen, Message userMsg,String prompt)
+    public static Flowable<String> streamCallWithMessage(Generation gen, Message userMsg,String prompt)
             throws NoApiKeyException, ApiException, InputRequiredException {
         GenerationParam param = buildGenerationParam(userMsg,prompt);
         Flowable<GenerationResult> result = gen.streamCall(param);
@@ -51,7 +51,7 @@ public class AiUtils {
             System.out.println(JsonUtils.toJson(message));
             MessagePojo messagePojo = new MessagePojo();
             messagePojo.init(message);
-            return messagePojo;
+            return com.bootx.util.JsonUtils.toJson(messagePojo);
         });
     }
 }
