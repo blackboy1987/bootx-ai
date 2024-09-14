@@ -1,5 +1,7 @@
 package com.bootx.service.impl;
 
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
 import com.bootx.dao.TextAppDao;
 import com.bootx.entity.TextApp;
 import com.bootx.service.TextAppService;
@@ -19,4 +21,5 @@ public class TextAppServiceImpl extends BaseServiceImpl<TextApp,Long> implements
     public TextApp findByName(String name) {
         return textAppDao.find("name",name);
     }
+
 }

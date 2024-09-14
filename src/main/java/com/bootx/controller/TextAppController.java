@@ -24,20 +24,20 @@ public class TextAppController extends BaseController {
 
     @PostMapping("/category")
     private Result category(){
-        String s = redisService.get("category");
+        String s = redisService.get("category1234");
         List<Map<String, Object>> maps = new ArrayList<>();
         try {
             maps = JsonUtils.toObject(s, new TypeReference<List<Map<String, Object>>>() {
             });
             if(maps.isEmpty()){
-                maps = jdbcTemplate.queryForList("select id,name from textappcategory");
+                maps = jdbcTemplate.queryForList("select id,name from (select id,name,(select count(textapp.id) from textapp where textAppCategory_id=textappcategory.id) `count` from textappcategory) AS X where X.count>0 order by X.id;");
                 for (Map<String, Object> map : maps) {
                     map.put("list",jdbcTemplate.queryForList("select id,name,memo from textapp where textAppCategory_id=?",map.get("id")));
                 }
                 redisService.set("category",JsonUtils.toJson(maps),30, TimeUnit.MINUTES);
             }
         }catch (Exception e){
-            maps = jdbcTemplate.queryForList("select id,name from textappcategory");
+            maps = jdbcTemplate.queryForList("select id,name from (select id,name,(select count(textapp.id) from textapp where textAppCategory_id=textappcategory.id) `count` from textappcategory) AS X where X.count>0 order by X.id;");
             for (Map<String, Object> map : maps) {
                 map.put("list",jdbcTemplate.queryForList("select id,name,memo from textapp where textAppCategory_id=?",map.get("id")));
             }

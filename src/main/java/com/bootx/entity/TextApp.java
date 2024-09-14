@@ -44,9 +44,11 @@ public class TextApp extends OrderedEntity<Long>{
      */
     @NotNull
     @Column(nullable = false)
+    @JsonView({PageView.class})
     private Integer type;
 
     @Comment("是否推荐。true：是，false：否")
+    @JsonView({PageView.class})
     private Boolean isRecommend;
 
 

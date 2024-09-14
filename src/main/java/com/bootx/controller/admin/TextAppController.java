@@ -39,6 +39,7 @@ public class TextAppController extends BaseController {
     @PostMapping("/list")
     @JsonView(BaseEntity.PageView.class)
     public Result list(Pageable pageable){
+        pageable.setPageSize(1000);
         return Result.success(textAppService.findPage(pageable));
     }
 
@@ -86,5 +87,11 @@ public class TextAppController extends BaseController {
             e.printStackTrace();
             return Result.success(Collections.EMPTY_LIST);
         }
+    }
+
+    @PostMapping("/delete")
+    public Result delete(Long[] ids){
+        textAppService.delete(ids);
+        return Result.success();
     }
 }
