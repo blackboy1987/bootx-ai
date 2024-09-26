@@ -55,7 +55,11 @@ public class CurrentUserHandlerInterceptor implements HandlerInterceptor {
 		if(userClass.isAssignableFrom(Admin.class)){
 			request.setAttribute(getCurrentUserAttributeName(), adminService.getCurrent());
 		}else if(userClass.isAssignableFrom(Member.class)){
-			request.setAttribute(getCurrentUserAttributeName(), memberService.getCurrent());
+			try {
+				request.setAttribute(getCurrentUserAttributeName(), memberService.getCurrent());
+			}catch (Exception ignored){
+
+			}
 		}
 
 	}
