@@ -12,11 +12,11 @@ public class FfmpegExample {
 
         // FFmpeg 命令
         String[] command = {
-            "E:\\ffmpeg-7.0.1-essentials_build\\bin\\ffmpeg.exe",
-            "-i", "E:/ffmpeg-7.0.1-essentials_build/bin/1.jpg",
+            "D:\\ffmpeg-7.0.2-full_build\\bin\\ffmpeg.exe",
+            "-i", "D:/ffmpeg-7.0.2-full_build/bin/3.png",
             "-filter_complex",
             "\"[0:v]scale=w=1920:h=1920:force_original_aspect_ratio=increase,boxblur=40:5,crop=1920:1080[bg];[0:v]scale=-1:1080[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2\"",
-            "D:\\output.jpg"
+            "D:\\output.png"
         };
 
         System.out.println(StringUtils.join(command," "));
@@ -42,7 +42,7 @@ public class FfmpegExample {
 
             // 等待进程结束并获取退出码
             int exitCode = process.waitFor();
-            System.out.println("FFmpeg exited with code: " + exitCode);
+            System.out.println("结束: " + exitCode);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
