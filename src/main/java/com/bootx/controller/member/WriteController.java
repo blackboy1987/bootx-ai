@@ -87,7 +87,7 @@ public class WriteController extends BaseController {
     @PostMapping(value = "/reload")
     public String reload(String taskId,Integer count){
         String s1 = redisService.get(taskId + ":count");
-        if(StringUtils.equalsAnyIgnoreCase("-1",s1) || count>Integer.parseInt(s1)){
+        if(StringUtils.isBlank(s1) || StringUtils.equalsAnyIgnoreCase("-1",s1) || count>Integer.parseInt(s1)){
             return JsonUtils.toJson(MessagePojo.stop());
         }
         String s = redisService.get(taskId + ":" + count);

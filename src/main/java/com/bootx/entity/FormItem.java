@@ -1,6 +1,7 @@
 package com.bootx.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.util.List;
  * @author blackboy1987
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonView({BaseEntity.ViewView.class})
 public class FormItem implements Serializable {
 
     private String key;

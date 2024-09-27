@@ -7,6 +7,7 @@ import com.bootx.security.CurrentUser;
 import com.bootx.service.AdLogService;
 import com.bootx.service.TextAppService;
 import com.bootx.util.IPUtils;
+import com.bootx.util.JsonUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,5 +78,16 @@ public class IndexController extends BaseController {
         adLog.setIp(IPUtils.getIpAddr(request));
         adLogService.save(adLog);
         return Result.success();
+    }
+
+    @PostMapping("/search")
+    private Result search(String keyword){
+        Map<String,Object> data = new HashMap<>();
+        List<Map<String, Object>> list = jdbcTemplate.queryForList("select id,name,memo,icon from textapp where name like ? and textAppCategory_id not in (select id from textappcategory where name='办公');","%"+keyword+"%");
+        List<Map<String, Object>> list1 = jdbcTemplate.queryForList("select id,name,memo,icon from textapp where name like ? and textAppCategory_id in (select id from textappcategory where name='办公');","%"+keyword+"%");
+        data.put("list",list);
+        data.put("list1",list1);
+        System.out.println(JsonUtils.toJson(Result.success(data)));
+        return Result.success(data);
     }
 }

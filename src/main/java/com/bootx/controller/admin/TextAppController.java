@@ -9,6 +9,7 @@ import com.bootx.entity.TextApp;
 import com.bootx.entity.TextAppCategory;
 import com.bootx.service.TextAppCategoryService;
 import com.bootx.service.TextAppService;
+import com.bootx.service.impl.TextAppCategoryServiceImpl;
 import com.bootx.util.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -18,6 +19,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,13 +36,15 @@ public class TextAppController extends BaseController {
 
     @Resource
     private TextAppService textAppService;
+    @Resource
+    private TextAppCategoryService textAppCategoryService;
 
 
     @PostMapping("/list")
     @JsonView(BaseEntity.PageView.class)
-    public Result list(Pageable pageable){
+    public Result list(Pageable pageable,String name,Long textAppCategoryId){
         pageable.setPageSize(1000);
-        return Result.success(textAppService.findPage(pageable));
+        return Result.success(textAppService.findPage(pageable,name,textAppCategoryService.find(textAppCategoryId)));
     }
 
     @PostMapping("/formItem")
@@ -89,9 +93,36 @@ public class TextAppController extends BaseController {
         }
     }
 
+    @PostMapping("/save")
+    public Result save(TextApp textApp,Long textAppCategoryId,String formListStr){
+        textApp.setFormList(JsonUtils.toObject(formListStr, new TypeReference<List<FormItem>>() {
+        }));
+        textApp.setTextAppCategory(textAppCategoryService.find(textAppCategoryId));
+        textAppService.save(textApp);
+        return Result.success();
+    }
+    @PostMapping("/detail")
+    @JsonView(BaseEntity.ViewView.class)
+    public Result detail(Long id){
+        return Result.success(textAppService.find(id));
+    }
+
+    @PostMapping("/update")
+    public Result update(TextApp textApp,Long textAppCategoryId,String formListStr){
+        textApp.setFormList(JsonUtils.toObject(formListStr, new TypeReference<List<FormItem>>() {
+        }));
+        textApp.setTextAppCategory(textAppCategoryService.find(textAppCategoryId));
+        textAppService.update(textApp);
+        return Result.success();
+    }
     @PostMapping("/delete")
     public Result delete(Long[] ids){
         textAppService.delete(ids);
         return Result.success();
+    }
+
+    @PostMapping("/category")
+    public Result category(){
+        return Result.success(jdbcTemplate.queryForList("select id,name from textappcategory;"));
     }
 }
