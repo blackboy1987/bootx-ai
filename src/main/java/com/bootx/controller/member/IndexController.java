@@ -37,7 +37,7 @@ public class IndexController extends BaseController {
     private SmsLogService smsLogService;
 
     @PostMapping(value = "/message",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> message(String content){
+    public Flux<MessagePojo> message(String content){
         return Flux.from(Objects.requireNonNull(AiUtils.message(content,"")));
     }
 

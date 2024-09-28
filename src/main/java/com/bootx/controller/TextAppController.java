@@ -54,18 +54,6 @@ public class TextAppController extends BaseController {
             formList = JsonUtils.toObject(map.get("formList") + "", new TypeReference<List<Map<String, Object>>>() {
             });
         }else{
-
-           /* Map<String,Object> formItem0 = new HashMap<>();
-            formItem0.put("label","想要的内容");
-            formItem0.put("name","type");
-            formItem0.put("isRequired",true);
-            formItem0.put("type","select");
-            formItem0.put("min",1);
-            formItem0.put("max",1);
-            formItem0.put("value","");
-            formItem0.put("options","公众号文章的灵感,公众号文章的标题,公众号文章的大纲,公众号文章的开头段落,公众号文章的全文,微信朋友圈文案");
-            formList.add(formItem0);*/
-
             Map<String,Object> formItem = new HashMap<>();
             formItem.put("label","选择语气");
             formItem.put("name","topic");
@@ -105,5 +93,10 @@ public class TextAppController extends BaseController {
     private Result search(String keywords){
         System.out.println(keywords);
         return Result.success(jdbcTemplate.queryForList("select id,name,memo,icon from textApp where name like ?","%"+keywords+"%"));
+    }
+
+    @PostMapping("/office")
+    private Result office(){
+        return Result.success(jdbcTemplate.queryForList("select id,name,memo,icon from textapp where textAppCategory_id in (select id from textappcategory where name='办公');"));
     }
 }
