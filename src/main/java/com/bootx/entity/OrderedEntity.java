@@ -28,7 +28,7 @@ public abstract class OrderedEntity<ID extends Serializable> extends BaseEntity<
 	 */
 	@Min(0)
 	@Column(name = "orders")
-	@JsonView({PageView.class})
+	@JsonView({PageView.class, ViewView.class})
 	private Integer order;
 
 	/**

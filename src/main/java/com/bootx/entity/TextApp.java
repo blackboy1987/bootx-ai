@@ -15,13 +15,13 @@ import java.util.List;
 @Entity
 public class TextApp extends OrderedEntity<Long>{
 
-    @JsonView({PageView.class})
+    @JsonView({PageView.class, ViewView.class})
     private String name;
-    @JsonView({PageView.class})
+    @JsonView({PageView.class, ViewView.class})
     private String memo;
-    @JsonView({PageView.class})
+    @JsonView({PageView.class, ViewView.class})
     private String icon;
-    @JsonView({PageView.class})
+    @JsonView({PageView.class, ViewView.class})
     @Column(length = 8000)
     @Convert(converter = FormItemConverter.class)
     private List<FormItem> formList = new ArrayList<>();
@@ -31,10 +31,10 @@ public class TextApp extends OrderedEntity<Long>{
     @ManyToOne(fetch = FetchType.LAZY)
     private TextAppCategory textAppCategory;
 
-    @JsonView({PageView.class})
+    @JsonView({PageView.class, ViewView.class})
     @Column(length = 2000)
     private String prompt;
-    @JsonView({PageView.class})
+    @JsonView({PageView.class, ViewView.class})
     @Column(length = 2000)
     private String userPrompt;
 
@@ -44,11 +44,11 @@ public class TextApp extends OrderedEntity<Long>{
      */
     @NotNull
     @Column(nullable = false)
-    @JsonView({PageView.class})
+    @JsonView({PageView.class, ViewView.class})
     private Integer type;
 
     @Comment("是否推荐。true：是，false：否")
-    @JsonView({PageView.class})
+    @JsonView({PageView.class, ViewView.class})
     private Boolean isRecommend;
 
 
@@ -123,6 +123,25 @@ public class TextApp extends OrderedEntity<Long>{
     public void setIsRecommend(Boolean isRecommend) {
         this.isRecommend = isRecommend;
     }
+
+    @Transient
+    @JsonView({ViewView.class})
+    public Long getTextAppCategoryId(){
+        if(textAppCategory!=null){
+            return textAppCategory.getId();
+        }
+        return null;
+    }
+
+    @Transient
+    @JsonView({PageView.class})
+    public String getTextAppCategoryName(){
+        if(textAppCategory!=null){
+            return textAppCategory.getName();
+        }
+        return null;
+    }
+
 
     @Convert
     public static class FormItemConverter extends BaseAttributeConverter<List<FormItem>>{

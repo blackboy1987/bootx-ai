@@ -31,7 +31,7 @@ public class HomeController extends BaseController {
         Map<String,Object> map = new HashMap<>();
         map.put("title","热门创作");
         List<Map<String,Object>> list = new ArrayList<>();
-        String s = redisService.get("home_index2");
+        String s = redisService.get("home_index");
         try {
             list = JsonUtils.toObject(s, new TypeReference<List<Map<String, Object>>>() {
             });
