@@ -5,6 +5,7 @@ import com.bootx.entity.AiToolCategory;
 import com.bootx.service.AiToolCategoryService;
 import com.bootx.service.AiToolService;
 import com.bootx.service.RedisService;
+import com.bootx.util.caiji.aitool.Ai138Utils;
 import com.bootx.util.caiji.aitool.AiBotUtils;
 import com.bootx.util.caiji.aitool.AiKitUtils;
 import jakarta.annotation.Resource;
@@ -34,8 +35,8 @@ public class AiToolJob {
     public void category() {
         //category0();
         //category1();
-
-        detail();
+        category2();
+        detail2();
     }
 
     private void detail() {
@@ -52,8 +53,6 @@ public class AiToolJob {
                 aiToolService.create(aiTool);
             }
         }
-
-
     }
 
     private void category1() {
@@ -131,6 +130,44 @@ public class AiToolJob {
     }
 
 
+    private void category2() {
+        List<AiToolCategory> category = Ai138Utils.category();
+        category.forEach(item -> {
+            try {
+                aiToolCategoryService.create1(item);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                System.out.println(item.getName());
+            }
+        });
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,type,typeId,otherUrl from aitoolcategory");
+        for (Map<String, Object> map : maps) {
+            String id = map.get("id") + "";
+            AiToolCategory aiToolCategory = aiToolCategoryService.find(Long.valueOf(id));
+            String type = map.get("type") + "";
+            String typeId = map.get("typeId") + "";
+            String otherUrl = map.get("otherUrl") + "";
+            if (StringUtils.isEmpty(otherUrl) || StringUtils.equalsAnyIgnoreCase(otherUrl, "null")) {
+                List<AiTool> list = Ai138Utils.getList(typeId.replace(type + "_", ""));
+                for (AiTool aiTool : list) {
+                    aiTool.setAiToolCategory(aiToolCategory);
+                    aiToolService.create(aiTool);
+                }
+            } else {
+                List<AiTool> list = Ai138Utils.getList(otherUrl, 1);
+                list.addAll(Ai138Utils.getList(otherUrl, 2));
+                list.addAll(Ai138Utils.getList(otherUrl, 3));
+                list.addAll(Ai138Utils.getList(otherUrl, 4));
+                list.addAll(Ai138Utils.getList(otherUrl, 5));
+                for (AiTool aiTool : list) {
+                    aiTool.setAiToolCategory(aiToolCategory);
+                    aiToolService.create(aiTool);
+                }
+            }
+        }
+    }
+
+
     //@Scheduled(fixedRate = 1000 * 60 * 60 * 24)
     public void run() {
         int start1 = 1;
@@ -192,5 +229,21 @@ public class AiToolJob {
             redisService.set("2_", finalI + "");
         }
         System.out.println(start + ":" + end + "==========结束:" + (System.currentTimeMillis() - begin));
+    }
+
+    private void detail2() {
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,typeId,type from aitool where type=?","ai138");
+        for (Map<String, Object> map : maps) {
+            String s = map.get("id") + "";
+            String typeId = (map.get("typeId") + "").trim();
+            String type = map.get("type") + "";
+            if (StringUtils.equals(type, "ai-bot")) {
+                AiTool aiTool = AiBotUtils.get(typeId.replace(type + "_", ""));
+                aiToolService.create(aiTool);
+            } else if (StringUtils.equals(type, "ai-kit")) {
+                AiTool aiTool = AiKitUtils.get(typeId.replace(type + "_", ""));
+                aiToolService.create(aiTool);
+            }
+        }
     }
 }
