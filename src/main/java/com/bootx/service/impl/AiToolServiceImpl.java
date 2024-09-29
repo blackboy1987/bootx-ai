@@ -3,6 +3,7 @@ package com.bootx.service.impl;
 import com.bootx.dao.AiToolDao;
 import com.bootx.entity.AiTool;
 import com.bootx.service.AiToolService;
+import com.bootx.util.JsonUtils;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,10 @@ public class AiToolServiceImpl extends BaseServiceImpl<AiTool,Long> implements A
 
     @Override
     public void create(AiTool aiTool) {
-        if(aiTool==null){
+        if(aiTool==null || StringUtils.isEmpty(aiTool.getOtherUrl())){
             return;
         }
-        AiTool aiTool1 = aiToolDao.find("typeId", aiTool.getTypeId());
+        AiTool aiTool1 = aiToolDao.find("otherUrl", aiTool.getOtherUrl());
         if(aiTool1==null){
             super.save(aiTool);
         }else{

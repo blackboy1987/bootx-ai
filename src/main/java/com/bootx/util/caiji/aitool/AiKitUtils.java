@@ -104,6 +104,89 @@ public class AiKitUtils {
         return aiTool;
     }
 
+
+    public static AiTool detail(String url){
+        AiTool aiTool = new AiTool();
+        aiTool.setType(TYPE);
+        String s = WebUtils.get(url, null);
+        Document parse = Jsoup.parse(s);
+        aiTool.setOtherUrl(url);
+        // 网站封面图
+        Elements siteico = parse.getElementsByClass("siteico");
+        Elements select = siteico.select("img.img-cover");
+        String icon = select.attr("data-src");
+        if(StringUtils.isNotBlank(icon)){
+            aiTool.setCover(icon);
+        }
+        Elements elementsByClass = parse.getElementsByClass("site-body");
+        if(!elementsByClass.isEmpty()){
+            Element first1 = elementsByClass.first();
+            // 分类。注意会有多级分类
+            if(first1!=null){
+                Elements elementsByClass1 = first1.getElementsByClass("btn-cat");
+                for (int i = 0; i < elementsByClass1.size(); i++) {
+                    if(elementsByClass1.size()>1){
+                        // 两级分类
+                        AiToolCategory parent = new AiToolCategory();
+                        parent.setName(elementsByClass1.get(0).text());
+                        parent.setType(TYPE+"_"+0);
+                        AiToolCategory child = new AiToolCategory();
+                        child.setName(elementsByClass1.get(1).text());
+                        child.setType(TYPE+"_"+0);
+                        child.setParent(parent);
+                        aiTool.setAiToolCategory(child);
+
+                    }else {
+                        // 一级分类
+                        AiToolCategory child = new AiToolCategory();
+                        child.setName(elementsByClass1.get(0).text());
+                        child.setType(TYPE+"_"+0);
+                        aiTool.setAiToolCategory(child);
+                    }
+                }
+            }
+            if(!elementsByClass.isEmpty()){
+                Element first = elementsByClass.first();
+                if (first!=null) {
+                    // 名称
+                    Elements elementsByClass2 = first.getElementsByClass("site-name");
+                    aiTool.setName(elementsByClass2.text());
+                    // 简介
+                    Elements elementsByClass3 = first.getElementsByClass("mt-2");
+                    aiTool.setMemo(elementsByClass3.text());
+                    // 标签
+                    Elements elementsByClass4 = first.getElementsByClass("mr-2");
+                    aiTool.setTag(elementsByClass4.text().replace(" 访问官网",""));
+                    // 网站地址。有可能会没有
+                    Elements elementsByClass5 = first.getElementsByClass("site-go-url");
+                    if(!elementsByClass5.isEmpty()){
+                        Elements a = Objects.requireNonNull(elementsByClass5.first()).getElementsByTag("a");
+                        if(!a.isEmpty()){
+                            aiTool.setUrl(a.attr("href"));
+                        }
+                    }
+                }
+            }
+        }
+        // 内容
+        Elements elementsByClass1 = parse.getElementsByClass("content-wrap");
+        if(!elementsByClass1.isEmpty()){
+            Elements elementsByClass2 = elementsByClass1.first().getElementsByClass("panel-body");
+            Element first = elementsByClass2.first();
+            if(first!=null){
+                for (Element a : first.getElementsByTag("a")) {
+                    a.removeAttr("href");
+                }
+                aiTool.setDescription(elementsByClass2.html());
+            }
+        }
+        if(StringUtils.isBlank(aiTool.getTypeId())){
+            return null;
+        }
+        return aiTool;
+    }
+
+
     public static List<AiTool> getIcon(){
         List<AiTool> aiTools = new ArrayList<>();
         for (int i = 1; i < 100; i++) {

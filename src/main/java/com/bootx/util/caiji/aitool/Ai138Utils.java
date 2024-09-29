@@ -91,6 +91,83 @@ public class Ai138Utils {
         return aiTool;
     }
 
+
+    public static AiTool detail(String url){
+        AiTool aiTool = new AiTool();
+        aiTool.setType(TYPE);
+        String s = WebUtils.get(url, null);
+        Document parse = Jsoup.parse(s);
+        aiTool.setOtherUrl(url);
+
+        // 网站封面图片
+        Element content = parse.getElementById("content");
+        if(content!=null){
+            Elements select = content.select("img.img-cover");
+            String icon = select.attr("data-src");
+            if(StringUtils.isNotBlank(icon)){
+                if(!StringUtils.startsWith(icon,"http")){
+                    icon = "https:"+icon;
+                }
+                aiTool.setCover(icon);
+            }
+        }else{
+            System.out.println("无封面图："+url);
+        }
+
+
+        Elements elementsByClass = parse.getElementsByClass("site-content");
+        if(!elementsByClass.isEmpty()){
+            Element first1 = elementsByClass.first();
+            // 分类。注意会有多级分类
+            if(first1!=null){
+                Elements elementsByClass1 = first1.getElementsByClass("btn-cat");
+                List<String> categories = new ArrayList<>();
+                for (Element element : elementsByClass1) {
+                    categories.add(element.text());
+                }
+                aiTool.setCategoryNames(categories);
+            }
+            if(!elementsByClass.isEmpty()){
+                Element first = elementsByClass.first();
+                if (first!=null) {
+                    // 名称
+                    Elements elementsByClass2 = first.getElementsByClass("titlesite");
+                    aiTool.setName(elementsByClass2.text());
+                    // 简介
+                    Elements elementsByClass3 = first.getElementsByClass("mb-2");
+                    aiTool.setMemo(elementsByClass3.text());
+                    // 标签
+                    Elements elementsByClass4 = first.getElementsByClass("styled-link");
+                    aiTool.setTag(elementsByClass4.text().replace(" 访问官网",""));
+                    // 网站地址。有可能会没有
+                    Elements elementsByClass5 = first.getElementsByClass("site-go-url");
+                    if(!elementsByClass5.isEmpty()){
+                        Elements a = Objects.requireNonNull(elementsByClass5.first()).getElementsByTag("a");
+                        if(!a.isEmpty()){
+                            aiTool.setUrl(a.attr("href"));
+                        }
+                    }
+                }
+            }
+        }
+        // 内容
+        Elements elementsByClass1 = parse.getElementsByClass("content-wrap");
+        if(!elementsByClass1.isEmpty()){
+            Elements elementsByClass2 = elementsByClass1.first().getElementsByClass("panel-body");
+            Element first = elementsByClass2.first();
+            if(first!=null){
+                for (Element a : first.getElementsByTag("a")) {
+                    a.removeAttr("href");
+                }
+                aiTool.setDescription(elementsByClass2.html());
+            }
+        }
+        if(StringUtils.isBlank(aiTool.getName())){
+            return null;
+        }
+        return aiTool;
+    }
+
     public static List<AiTool> getIcon(){
         List<AiTool> aiTools = new ArrayList<>();
         for (int i = 1; i < 100; i++) {
@@ -168,11 +245,11 @@ public class Ai138Utils {
                 aiTool.setOtherUrl(href);
                 String typeId = href.replaceAll(baseUrl+"link/", "").replaceAll(".html", "");
                 aiTool.setTypeId(TYPE+"_"+typeId);
-                String icon = first.getElementsByTag("img").attr("src");
+                String icon = first.getElementsByTag("img").attr("data-src");
                 aiTool.setIcon(icon);
                 Elements strong = first.getElementsByTag("strong");
                 aiTool.setName(strong.text());
-                Elements p = first.getElementsByClass("overflowClip_1");
+                Elements p = first.getElementsByClass("overflowClip_2");
                 aiTool.setMemo(p.text());
                 aiTools.add(aiTool);
             }
@@ -203,11 +280,11 @@ public class Ai138Utils {
                 aiTool.setOtherUrl(href);
                 String typeId = href.replaceAll(baseUrl+"link/", "").replaceAll(".html", "");
                 aiTool.setTypeId(TYPE+"_"+typeId);
-                String icon = first.getElementsByTag("img").attr("src");
+                String icon = first.getElementsByTag("img").attr("data-src");
                 aiTool.setIcon(icon);
                 Elements strong = first.getElementsByTag("strong");
                 aiTool.setName(strong.text());
-                Elements p = first.getElementsByClass("overflowClip_1");
+                Elements p = first.getElementsByClass("overflowClip_2");
                 aiTool.setMemo(p.text());
                 aiTools.add(aiTool);
             }
@@ -216,7 +293,7 @@ public class Ai138Utils {
     }
 
     public static void main(String[] args) {
-        AiTool aiTool = get("421");
+        AiTool aiTool = detail("https://www.ai138.com/link/23.html");
 
         System.out.println(aiTool);
     }

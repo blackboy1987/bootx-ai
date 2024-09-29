@@ -21,20 +21,24 @@ public class AiBotUtils {
 
     private static final String baseUrl="https://ai-bot.cn/";
 
-    public static AiTool get(String id){
+    public static AiTool detail(String url){
         AiTool aiTool = new AiTool();
         aiTool.setType(TYPE);
-        String s = WebUtils.get(baseUrl+"sites/"+id+".html", null);
+        aiTool.setOtherUrl(url);
+        String s = WebUtils.get(url, null);
         Document parse = Jsoup.parse(s);
-        aiTool.setOtherUrl(baseUrl+"sites/"+id+".html");
 
         // 网站图标
         Elements siteico = parse.getElementsByClass("siteico");
         Elements select = siteico.select("img.img-cover");
-        String icon = select.attr("src");
+        String icon = select.attr("data-src");
         if(StringUtils.isNotBlank(icon)){
+            if(!StringUtils.startsWith(icon,"http")){
+                icon = "https:"+icon;
+            }
             aiTool.setCover(icon);
-            aiTool.setTypeId(TYPE+"_"+id);
+        }else{
+            System.out.println("无封面图："+url);
         }
 
 

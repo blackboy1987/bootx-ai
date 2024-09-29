@@ -11,6 +11,7 @@ public class AiTool extends BaseEntity<Long>{
     @JsonView({ViewView.class})
     private String name;
 
+    @Column(columnDefinition = "varchar(2000)")
     private String icon;
 
     @JsonView({ViewView.class})
@@ -39,6 +40,7 @@ public class AiTool extends BaseEntity<Long>{
 
     private String type;
 
+    @Column(nullable = false,updatable = false,unique = true)
     private String otherUrl;
 
     @JsonView({ViewView.class})
