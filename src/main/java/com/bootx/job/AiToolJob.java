@@ -33,10 +33,10 @@ public class AiToolJob {
 
     @Scheduled(fixedRate = 1000 * 60 * 60 * 24)
     public void category() {
-        //category0();
-        //detail0();
-        category1();
-        detail1();
+        category0();
+        detail0();
+        //category1();
+        //detail1();
 
         //category2();
        // detail2();
