@@ -33,13 +33,13 @@ public class AiToolJob {
 
     @Scheduled(fixedRate = 1000 * 60 * 60 * 24)
     public void category() {
-        category0();
-        detail0();
+        //category0();
+        //detail0();
         //category1();
         //detail1();
 
-        //category2();
-       // detail2();
+        category2();
+        detail2();
     }
 
     private void category1() {
@@ -52,7 +52,7 @@ public class AiToolJob {
                 System.out.println(item.getName());
             }
         });
-        List<Map<String, Object>> maps1 = jdbcTemplate.queryForList("select id,type,typeId,otherUrl from aitoolcategory where type=?","ai-kit");
+        List<Map<String, Object>> maps1 = jdbcTemplate.queryForList("select id,type,typeId,otherUrl from aitoolcategory where type=?", "ai-kit");
         for (Map<String, Object> map : maps1) {
             String id = map.get("id") + "";
             AiToolCategory aiToolCategory = aiToolCategoryService.find(Long.valueOf(id));
@@ -89,7 +89,7 @@ public class AiToolJob {
                 System.out.println(item.getName());
             }
         });
-        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,type,typeId,otherUrl from aitoolcategory where type=?","ai-bot");
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,type,typeId,otherUrl from aitoolcategory where type=?", "ai-bot");
         for (Map<String, Object> map : maps) {
             String id = map.get("id") + "";
             AiToolCategory aiToolCategory = aiToolCategoryService.find(Long.valueOf(id));
@@ -155,7 +155,7 @@ public class AiToolJob {
     }
 
     private void detail0() {
-        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,typeId,type,otherUrl from aitool where type=? order by id asc","ai-bot");
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,typeId,type,otherUrl from aitool where type=? order by id asc", "ai-bot");
         for (Map<String, Object> map : maps) {
             String otherUrl = (map.get("otherUrl") + "").trim();
             AiTool aiTool = AiBotUtils.detail(otherUrl);
@@ -164,7 +164,7 @@ public class AiToolJob {
     }
 
     private void detail1() {
-        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,typeId,type,otherUrl from aitool where type=? order by id asc","ai-kit");
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,typeId,type,otherUrl from aitool where type=? order by id asc", "ai-kit");
         for (Map<String, Object> map : maps) {
             String otherUrl = (map.get("otherUrl") + "").trim();
             AiTool aiTool = AiKitUtils.detail(otherUrl);
@@ -173,7 +173,7 @@ public class AiToolJob {
     }
 
     private void detail2() {
-        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,typeId,type,otherUrl from aitool where type=? order by id asc","ai138");
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList("select id,typeId,type,otherUrl from aitool where type=? order by id asc", "ai138");
         for (Map<String, Object> map : maps) {
             String otherUrl = (map.get("otherUrl") + "").trim();
             AiTool aiTool = Ai138Utils.detail(otherUrl);

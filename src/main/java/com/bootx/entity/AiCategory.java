@@ -11,7 +11,7 @@ import java.util.List;
  * AI文本分类
  */
 @Entity
-public class AiToolCategory extends OrderedEntity<Long>{
+public class AiCategory extends OrderedEntity<Long>{
     /**
      * 树路径分隔符
      */
@@ -34,19 +34,7 @@ public class AiToolCategory extends OrderedEntity<Long>{
     private Integer grade;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private AiToolCategory parent;
-
-    @Column(nullable = false,updatable = false)
-    private String type;
-
-
-    @Column(nullable = false,updatable = false)
-    private String typeId;
-
-    private String otherUrl;
-
-    private Long aiCategoryId;
-
+    private AiCategory parent;
 
     public String getName() {
         return name;
@@ -56,11 +44,11 @@ public class AiToolCategory extends OrderedEntity<Long>{
         this.name = name;
     }
 
-    public AiToolCategory getParent() {
+    public AiCategory getParent() {
         return parent;
     }
 
-    public void setParent(AiToolCategory parent) {
+    public void setParent(AiCategory parent) {
         this.parent = parent;
     }
 
@@ -78,38 +66,6 @@ public class AiToolCategory extends OrderedEntity<Long>{
 
     public void setGrade(Integer grade) {
         this.grade = grade;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(String typeId) {
-        this.typeId = typeId;
-    }
-
-    public String getOtherUrl() {
-        return otherUrl;
-    }
-
-    public void setOtherUrl(String otherUrl) {
-        this.otherUrl = otherUrl;
-    }
-
-    public Long getAiCategoryId() {
-        return aiCategoryId;
-    }
-
-    public void setAiCategoryId(Long aiCategoryId) {
-        this.aiCategoryId = aiCategoryId;
     }
 
     /**
@@ -133,8 +89,8 @@ public class AiToolCategory extends OrderedEntity<Long>{
      * @return 所有上级分类
      */
     @Transient
-    public List<AiToolCategory> getParents() {
-        List<AiToolCategory> parents = new ArrayList<>();
+    public List<AiCategory> getParents() {
+        List<AiCategory> parents = new ArrayList<>();
         recursiveParents(parents, this);
         return parents;
     }
@@ -147,11 +103,11 @@ public class AiToolCategory extends OrderedEntity<Long>{
      * @param textAppCategory
      *            商品分类
      */
-    private void recursiveParents(List<AiToolCategory> parents, AiToolCategory textAppCategory) {
+    private void recursiveParents(List<AiCategory> parents, AiCategory textAppCategory) {
         if (textAppCategory == null) {
             return;
         }
-        AiToolCategory parent = textAppCategory.getParent();
+        AiCategory parent = textAppCategory.getParent();
         if (parent != null) {
             parents.add(0, parent);
             recursiveParents(parents, parent);
