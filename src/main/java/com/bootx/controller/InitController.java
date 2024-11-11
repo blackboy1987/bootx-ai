@@ -33,17 +33,6 @@ import java.util.Map;
 public class InitController {
 
     @Resource
-    private TopicService topicService;
-
-    @Resource
-    private PromptService promptService;
-
-    @Resource
-    private CategoryService categoryService;
-
-    @Resource
-    private CategoryAppService categoryAppService;
-    @Resource
     private TextAppService textAppService;
     @Resource
     private TextAppCategoryService textAppCategoryService;
