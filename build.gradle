@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.5'
+    id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.6'
 }
 
@@ -20,22 +20,23 @@ repositories {
     }
     mavenLocal()
     mavenCentral()
-    mavenCentral()
 }
 
 dependencies {
-    implementation group: 'commons-logging', name: 'commons-logging', version: '1.3.2'
+
+
+    // 豆包大模型skd
+    implementation group: 'com.volcengine', name: 'volcengine-java-sdk-ark-runtime', version: '0.1.143'
+
+    implementation group: 'commons-logging', name: 'commons-logging', version: '1.3.4'
     implementation group: 'com.alibaba.fastjson2', name: 'fastjson2', version: '2.0.53'
-
-    implementation group: 'com.alipay.sdk', name: 'alipay-sdk-java', version: '4.39.246.ALL'
-
-    implementation group: 'org.jsoup', name: 'jsoup', version: '1.18.1'
-
+    implementation group: 'com.alipay.sdk', name: 'alipay-sdk-java', version: '4.40.26.ALL'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.18.3'
     implementation group: 'org.apache.commons', name: 'commons-email', version: '1.6.0'
-
     implementation group: 'com.aliyun.oss', name: 'aliyun-sdk-oss', version: '3.18.1'
 
     implementation fileTree(dir:'lib',includes:['*jar'])
+
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
@@ -48,12 +49,11 @@ dependencies {
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.17.1'
     implementation group: 'org.dom4j', name: 'dom4j', version: '2.1.4'
-
-
-    implementation("com.alibaba:dashscope-sdk-java:2.16.9"){
+    implementation("com.alibaba:dashscope-sdk-java:2.16.10"){
         exclude(group:'org.slf4j',module:"slf4j-simple")
     }
 
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
