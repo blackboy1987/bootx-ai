@@ -16,13 +16,13 @@ import java.util.List;
 @Entity
 public class TextApp extends OrderedEntity<Long>{
 
-    @JsonView({PageView.class,ViewView.class})
+    @JsonView({PageView.class,ViewView.class,InfoView.class})
     private String name;
     @JsonView({PageView.class,ViewView.class})
     private String memo;
     @JsonView({PageView.class,ViewView.class})
     private String icon;
-    @JsonView({PageView.class,ViewView.class})
+    @JsonView({PageView.class,ViewView.class,InfoView.class})
     @Column(length = 8000)
     @Convert(converter = FormItemConverter.class)
     private List<FormItem> formList = new ArrayList<>();
@@ -123,6 +123,9 @@ public class TextApp extends OrderedEntity<Long>{
 
     public void setIsRecommend(Boolean isRecommend) {
         this.isRecommend = isRecommend;
+    }
+
+    public interface InfoView extends IdView {
     }
 
     @Convert

@@ -12,7 +12,7 @@ import java.util.List;
  * @author blackboy1987
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonView({BaseEntity.ViewView.class})
+@JsonView({BaseEntity.ViewView.class,TextApp.InfoView.class})
 public class FormItem implements Serializable {
 
     private String key;
